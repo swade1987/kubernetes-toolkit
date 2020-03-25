@@ -14,27 +14,27 @@ curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomiz
 tar xz && mv kustomize /usr/local/bin/kustomize
 kustomize version
 
-HELM_V2=2.16.4
+HELM_V2=v2.16.4
 printf "\ndownloading helm ${HELM_V2}\n"
-curl -sSL https://get.helm.sh/helm-v${HELM_V2}-linux-amd64.tar.gz | \
+curl -sSL https://get.helm.sh/helm-${HELM_V2}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helm && rm -rf linux-amd64
 helm version --client
 
-HELM_V3=3.1.4
+HELM_V3=v3.1.2
 printf "\ndownloading helm ${HELM_V3}\n"
-curl -sSL https://get.helm.sh/helm-v${HELM_V3}-linux-amd64.tar.gz | \
+curl -sSL https://get.helm.sh/helm-${HELM_V3}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64
 helmv3 version
 
-KUBEVAL=v0.14.0
+KUBEVAL=0.14.0
 printf "\ndownloading kubeval ${KUBEVAL}\n"
-curl -sL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
+curl -sSL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
 tar xz && mv kubeval /usr/local/bin/kubeval
 kubeval --version
 
 CONFTEST=0.18.0
 printf "\ndownloading conftest ${CONFTEST}\n"
-curl -sL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
+curl -sSL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
