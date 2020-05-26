@@ -4,7 +4,7 @@ LABEL MAINTAINER Steven Wade <steven@stevenwade.co.uk>
 ARG KUBERNETES_VERSION="Unknown"
 
 # Install necessary tooling
-RUN apk add --no-cache curl bash execline findutils && rm -rf /var/cache/apk/*
+RUN apk add --no-cache curl bash execline findutils git && rm -rf /var/cache/apk/*
 
 # Copy in rego policies to work with Conftest.
 COPY policies /policies/
