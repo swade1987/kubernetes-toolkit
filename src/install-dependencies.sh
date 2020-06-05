@@ -14,43 +14,53 @@ curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomiz
 tar xz && mv kustomize /usr/local/bin/kustomize
 kustomize version
 
-HELM_V2=v2.16.4
-printf "\ndownloading helm ${HELM_V2}\n"
-curl -sSL https://get.helm.sh/helm-${HELM_V2}-linux-amd64.tar.gz | \
-tar xz && mv linux-amd64/helm /usr/local/bin/helm && rm -rf linux-amd64
-helm version --client
-
-HELM_V3=v3.1.2
+HELM_V3=3.1.2
 printf "\ndownloading helm ${HELM_V3}\n"
-curl -sSL https://get.helm.sh/helm-${HELM_V3}-linux-amd64.tar.gz | \
-tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64
+curl -sSL https://get.helm.sh/helm-v${HELM_V3}-linux-amd64.tar.gz | \
+tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln -s /usr/local/bin/helmv3 /usr/local/bin/helm
 helmv3 version
+helm version
 
 KUBEVAL=0.14.0
 printf "\ndownloading kubeval ${KUBEVAL}\n"
-curl -sSL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
+curl -sL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
 tar xz && mv kubeval /usr/local/bin/kubeval
 kubeval --version
 
-CONFTEST=0.18.0
+CONFTEST=0.18.2
 printf "\ndownloading conftest ${CONFTEST}\n"
-curl -sSL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
+curl -sL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-KUBESEAL=v0.11.0
+KUBESEAL=v0.12.3
 printf "\ndownloading kubeseal ${KUBESEAL}\n"
 curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL}/kubeseal-linux-amd64 \
 -o /usr/local/bin/kubeseal && chmod +x /usr/local/bin/kubeseal
-which kubeseal
+kubeseal --version
 
+FLUXCTL=1.19.0
+printf "\ndownloading fluxctl ${FLUXCTL}\n"
+curl -sL https://github.com/fluxcd/flux/releases/download/${FLUXCTL}/fluxctl_linux_amd64 \
+-o /usr/local/bin/fluxctl && chmod +x /usr/local/bin/fluxctl
+fluxctl version
+
+ISTIOCTL=1.5.4
+printf "\ndownloading istioctl ${ISTIOCTL}\n"
+curl -sL https://github.com/istio/istio/releases/download/${ISTIOCTL}/istio-${ISTIOCTL}-linux.tar.gz | \
+tar xz && mv istio-${ISTIOCTL}/bin/istioctl /usr/local/bin/istioctl
+rm -rf istio-${ISTIOCTL}
+istioctl version --remote=false
+
+YQ=3.2.1
 printf "\ndownloading yq\n"
-curl -sL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
+curl -sL https://github.com/mikefarah/yq/releases/download/${YQ}/yq_linux_amd64 \
 -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 yq --version
 
+JQ=1.6
 printf "\ndownloading jq\n"
-curl -sL https://github.com/stedolan/jq/releases/latest/download/jq-linux64 \
+curl -sL https://github.com/stedolan/jq/releases/download/jq-${JQ}/jq-linux64 \
 -o /usr/local/bin/jq && chmod +x /usr/local/bin/jq
 jq --version
 

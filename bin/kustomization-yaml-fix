@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+DIR="$1"
+
+function main {
+	find "$DIR" -name kustomization.yaml -print0 \
+		| xargs -P 0 -0I {} dirname {} \
+		| xargs -P 0 -I {} sh -c "cd '{}' && kustomize edit fix"
+}
+
+main

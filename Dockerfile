@@ -4,15 +4,26 @@ LABEL MAINTAINER Steven Wade <steven@stevenwade.co.uk>
 ARG KUBERNETES_VERSION="Unknown"
 
 # Install necessary tooling
-RUN apk add --no-cache curl bash execline findutils git openssh-client && rm -rf /var/cache/apk/*
+RUN apk add --no-cache \
+  curl \
+  bash \
+  execline \
+  findutils \
+  git \
+  make \
+  && rm -rf /var/cache/apk/*
+
+# Install necessary packages
+COPY src/install-dependencies.sh /install-dependencies.sh
+RUN /install-dependencies.sh ${KUBERNETES_VERSION}
+
+# Expose the Kubeval schema location to speed up `kubeval` executions.
+ENV KUBEVAL_SCHEMA_LOCATION=file:///usr/local/kubeval/schemas
 
 # Copy in rego policies to work with Conftest.
-COPY policies /policies/
+COPY policies/ /policies/
 
-COPY install.sh /install.sh
-RUN chmod +x /install.sh
-RUN /install.sh ${KUBERNETES_VERSION}
-
-ENV KUBEVAL_SCHEMA_LOCATION=file:///usr/local/kubeval/schemas
+# Install /usr/local/bin
+COPY bin/* /usr/local/bin/
 
 CMD ["/bin/sh"]

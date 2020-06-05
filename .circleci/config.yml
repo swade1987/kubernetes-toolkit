@@ -16,14 +16,8 @@ jobs:
           name: install dependencies
           command: apk add --update alpine-sdk
       - run:
-          name: login to quay.io
-          command: make login
-      - run:
           name: build docker image
           command: make build
       - run:
           name: push image to quay.io
-          command: make push
-      - run:
-          name: log out of quay.io
-          command: make logout
+          command: make push-to-quay
