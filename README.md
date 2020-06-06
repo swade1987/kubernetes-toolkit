@@ -6,6 +6,8 @@ Minimal docker image for running useful Kubernetes tooling.
 
 Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://eu.gcr.io/swade1987/kubernetes-toolkit).
 
+The container is also scanned by [https://github.com/aquasecurity/trivy](https://github.com/aquasecurity/trivy) as part of CI.
+
 ## Packages included
 
 The docker container includes the following:

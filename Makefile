@@ -32,3 +32,6 @@ configure-gcloud-cli:
 	gcloud auth activate-service-account $(GCLOUD_SERVICE_EMAIL) --key-file=/tmp/gcloud-service-key.json
 	gcloud --quiet config set project $(GOOGLE_PROJECT_ID)
 	gcloud --quiet config set compute/zone $(GOOGLE_COMPUTE_ZONE)
+
+scan: build
+	trivy --light -s "UNKNOWN,MEDIUM,HIGH,CRITICAL" --exit-code 1 $(IMAGE)

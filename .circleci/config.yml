@@ -12,6 +12,31 @@ jobs:
           name: build docker image
           command: make build
 
+  scan:
+    docker:
+      - image: docker:18.06.1-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: apk add --update alpine-sdk
+      - run:
+          name: Install trivy
+          command: |
+            apk add --update-cache --upgrade curl rpm
+            VERSION=$(
+                curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | \
+                grep '"tag_name":' | \
+                sed -E 's/.*"v([^"]+)".*/\1/'
+            )
+            wget https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
+            tar zxvf trivy_${VERSION}_Linux-64bit.tar.gz
+            mv trivy /usr/local/bin
+      - run:
+          name: trivy scan
+          command: make scan
+
   publish:
     docker:
       - image: google/cloud-sdk
@@ -29,6 +54,7 @@ workflows:
   version: 2
   flow:
     jobs:
+      - scan
       - build:
           filters:
             branches:

@@ -1,4 +1,4 @@
-FROM alpine:3
+FROM alpine:3.12
 LABEL MAINTAINER Steven Wade <steven@stevenwade.co.uk>
 
 ARG KUBERNETES_VERSION="Unknown"
@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   findutils \
   git \
   make \
+  openssh-client \
   && rm -rf /var/cache/apk/*
 
 # Install necessary packages
