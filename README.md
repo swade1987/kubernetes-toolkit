@@ -1,9 +1,10 @@
 # Kubernetes Toolkit
 
 [![CircleCI](https://circleci.com/gh/swade1987/kubernetes-toolkit.svg?style=svg)](https://circleci.com/gh/swade1987/kubernetes-toolkit)
-[![Docker Repository on Quay](https://quay.io/repository/swade1987/kubernetes-toolkit/status "Docker Repository on Quay")](https://quay.io/repository/swade1987/kubernetes-toolkit)
 
 Minimal docker image for running useful Kubernetes tooling.
+
+Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://eu.gcr.io/swade1987/kubernetes-toolkit).
 
 ## Packages included
 
