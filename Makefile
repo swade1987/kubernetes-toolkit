@@ -18,7 +18,9 @@ IMAGE := $(PROJNAME):$(KUBERNETES_VERSION)
 #------------------------------------------------------------------
 
 build:
-	docker build -t $(IMAGE) .
+	docker build \
+	--build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) \
+	-t $(IMAGE) .
 
 push-to-gcr: configure-gcloud-cli
 	docker tag $(IMAGE) $(GCR_REPO)/$(IMAGE)
