@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   findutils \
   git \
   make \
+  openssh-client \
   && rm -rf /var/cache/apk/*
 
 # Install necessary packages
