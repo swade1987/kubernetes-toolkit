@@ -28,9 +28,12 @@ function download {
   CHART_NAME=$(yq r "${1}" spec.chart.name)
   CHART_VERSION=$(yq r "${1}" spec.chart.version)
   CHART_DIR=${2}/${CHART_NAME}
-  helm repo add "${CHART_NAME}" "${CHART_REPO}"
+
+  # Use the md5 sum of the repository URL so we don't keep adding a helm repo per helm chart.
+  CHART_REPO_MD5=`/bin/echo $CHART_REPO | /usr/bin/md5sum | cut -f1 -d" "`
+  helm repo add "${CHART_REPO_MD5}" "${CHART_REPO}"
   helm repo update
-  helm fetch --version "${CHART_VERSION}" --untar "${CHART_NAME}"/"${CHART_NAME}" --untardir "${2}"
+  helm fetch --version "${CHART_VERSION}" --untar "${CHART_REPO_MD5}"/"${CHART_NAME}" --untardir "${2}"
   echo "${CHART_DIR}"
 }
 
