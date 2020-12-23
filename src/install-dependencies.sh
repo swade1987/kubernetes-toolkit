@@ -8,7 +8,7 @@ curl -sL https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL}/b
 -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 kubectl version --client
 
-KUSTOMIZE=3.5.4
+KUSTOMIZE=3.8.4
 printf "\ndownloading kustomize ${KUSTOMIZE}\n"
 curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE}/kustomize_v${KUSTOMIZE}_linux_amd64.tar.gz | \
 tar xz && mv kustomize /usr/local/bin/kustomize
@@ -21,7 +21,7 @@ tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln 
 helmv3 version
 helm version
 
-KUBEVAL=0.14.0
+KUBEVAL=0.15.0
 printf "\ndownloading kubeval ${KUBEVAL}\n"
 curl -sL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
 tar xz && mv kubeval /usr/local/bin/kubeval
@@ -29,25 +29,25 @@ kubeval --version
 
 CONFTEST=0.18.2
 printf "\ndownloading conftest ${CONFTEST}\n"
-curl -sL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
+curl -sL https://github.com//open-policy-agent/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-KUBESEAL=v0.12.3
+KUBESEAL=v0.13.1
 printf "\ndownloading kubeseal ${KUBESEAL}\n"
 curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL}/kubeseal-linux-amd64 \
 -o /usr/local/bin/kubeseal && chmod +x /usr/local/bin/kubeseal
 kubeseal --version
 
-FLUXCTL=1.19.0
+FLUXCTL=1.21.0
 printf "\ndownloading fluxctl ${FLUXCTL}\n"
 curl -sL https://github.com/fluxcd/flux/releases/download/${FLUXCTL}/fluxctl_linux_amd64 \
 -o /usr/local/bin/fluxctl && chmod +x /usr/local/bin/fluxctl
 fluxctl version
 
-ISTIOCTL=1.5.4
+ISTIOCTL=1.7.6
 printf "\ndownloading istioctl ${ISTIOCTL}\n"
-curl -sL https://github.com/istio/istio/releases/download/${ISTIOCTL}/istio-${ISTIOCTL}-linux.tar.gz | \
+curl -sL https://github.com/istio/istio/releases/download/${ISTIOCTL}/istio-${ISTIOCTL}-linux-amd64.tar.gz | \
 tar xz && mv istio-${ISTIOCTL}/bin/istioctl /usr/local/bin/istioctl
 rm -rf istio-${ISTIOCTL}
 istioctl version --remote=false
