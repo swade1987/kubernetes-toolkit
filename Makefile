@@ -2,7 +2,7 @@
 # Project build information
 #------------------------------------------------------------------
 PROJNAME := kubernetes-toolkit
-KUBERNETES_VERSION := 1.18.14
+KUBERNETES_VERSION := 1.21.0
 
 GCR_REPO := eu.gcr.io/swade1987
 GCLOUD_SERVICE_KEY ?="unknown"
