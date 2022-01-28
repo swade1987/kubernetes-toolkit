@@ -1,12 +1,10 @@
 # Kubernetes Toolkit 🛠️
 
-[![CircleCI](https://circleci.com/gh/swade1987/kubernetes-toolkit.svg?style=svg)](https://circleci.com/gh/swade1987/kubernetes-toolkit)
+![Build Status](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/main.yml/badge.svg)
 
 Minimal docker image for running useful Kubernetes tooling.
 
 Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://eu.gcr.io/swade1987/kubernetes-toolkit).
-
-The container is also scanned by [https://github.com/aquasecurity/trivy](https://github.com/aquasecurity/trivy) as part of CI.
 
 ## Packages included
 
