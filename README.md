@@ -1,6 +1,6 @@
 # Kubernetes Toolkit 🛠️
 
-![Build Status](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/main.yml/badge.svg)
+![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 
 Minimal docker image for running useful Kubernetes tooling.
 
