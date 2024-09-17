@@ -4,8 +4,7 @@ set -o errexit
 
 DIR=${1}
 IGNORE_VALUES=${2-false}
-KUBE_VER=${3-master}
-HELM_VER=${4-v2}
+HELM_VER=${3-v2}
 HRVAL="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/hrval.sh"
 
 if [[ ${HELM_VER} == "v2" ]]; then
@@ -14,7 +13,7 @@ fi
 
 # If the path provided is actually a file, just run hrval against this one file
 if test -f "${DIR}"; then
-  ${HRVAL} "${DIR}" "${IGNORE_VALUES}" "${KUBE_VER}" "${HELM_VER}"
+  ${HRVAL} "${DIR}" "${IGNORE_VALUES}" "${HELM_VER}"
   exit 0
 fi
 
@@ -38,7 +37,7 @@ DIR_PATH=$(echo "${DIR}" | sed "s/^\///;s/\/$//")
 FILES_TESTED=0
 for f in `find ${DIR} -type f -name '*.yaml' -or -name '*.yml'`; do
   if [[ $(isHelmRelease "${f}") == "true" ]]; then
-    ${HRVAL} "${f}" "${IGNORE_VALUES}" "${KUBE_VER}" "${HELM_VER}"
+    ${HRVAL} "${f}" "${IGNORE_VALUES}" "${HELM_VER}"
     FILES_TESTED=$(( FILES_TESTED+1 ))
   else
     echo "Ignoring ${f} not a HelmRelease"
@@ -46,4 +45,4 @@ for f in `find ${DIR} -type f -name '*.yaml' -or -name '*.yml'`; do
 done
 
 # This will set the GitHub actions output 'numFilesTested'
-echo "::set-output name=numFilesTested::${FILES_TESTED}"
+echo "numFilesTested=${FILES_TESTED}" >> $GITHUB_OUTPUT

@@ -1,5 +1,5 @@
-FROM alpine:3.15
-LABEL MAINTAINER Steven Wade <steven@stevenwade.co.uk>
+FROM alpine:3.20.3
+LABEL MAINTAINER="Steven Wade <steven@stevenwade.co.uk>"
 
 ARG KUBERNETES_VERSION="Unknown"
 
@@ -13,6 +13,9 @@ RUN apk add --no-cache \
   make \
   openssh-client \
   && rm -rf /var/cache/apk/*
+
+# Install Python 3
+RUN apk add --update python3 py3-pip
 
 # Install necessary packages
 COPY src/install-dependencies.sh /install-dependencies.sh
