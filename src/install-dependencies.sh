@@ -14,24 +14,31 @@ curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomiz
 tar xz && mv kustomize /usr/local/bin/kustomize
 kustomize version
 
-HELM_V3=3.14.3
+HELM_V3=3.16.1
 printf "\nDownloading helm %s\n" "${HELM_V3}"
 curl -sSL https://get.helm.sh/helm-v${HELM_V3}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln -s /usr/local/bin/helmv3 /usr/local/bin/helm
 helmv3 version
 helm version
 
-KUBEVAL=0.16.1
-printf "\nDownloading kubeval %s\n" "${KUBEVAL}"
-curl -sL https://github.com/instrumenta/kubeval/releases/download/v${KUBEVAL}/kubeval-linux-amd64.tar.gz | \
-tar xz && mv kubeval /usr/local/bin/kubeval
-kubeval --version
+KUBECONFORM=0.6.7
+printf "\nDownloading kubeconform %s\n" "${KUBECONFORM}"
+curl -sL https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM}/kubeconform-linux-amd64.tar.gz | \
+tar xz && mv kubeconform /usr/local/bin/kubeconform
+kubeconform -v
 
 CONFTEST=0.55.0
 printf "\nDownloading conftest %s\n" "${CONFTEST}"
 curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
+
+FLUX=2.4.0
+printf "\nDownloading flux %s\n" "${FLUX}"
+curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/flux_${FLUX}_linux_amd64.tar.gz | \
+tar xz && mv flux /usr/local/bin/flux
+rm -rf flux_${FLUX}
+flux version --client
 
 ISTIOCTL=1.23.1
 # shellcheck disable=SC2059
@@ -68,7 +75,7 @@ printf "\nDownloading jsonlint %s\n" "${JSONLINT}"
 npm install jsonlint@${JSONLINT} -g
 jsonlint --version || :
 
-PLUTO=5.20.2
+PLUTO=5.20.3
 printf "\nDownloading pluto %s\n" "${PLUTO}"
 curl -sL https://github.com/FairwindsOps/pluto/releases/download/v${PLUTO}/pluto_${PLUTO}_linux_amd64.tar.gz | \
 tar xz && mv pluto /usr/local/bin/pluto
@@ -87,3 +94,7 @@ git clone https://github.com/swade1987/kubernetes-json-schema.git
 # shellcheck disable=SC2046
 cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict /usr/local/kubeval/schemas
 rm -rf kubernetes-json-schema
+
+printf "\nFetching flux json schemas for v%s\n" "${FLUX}"
+mkdir -p /usr/local/flux/schemas
+curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /usr/local/flux/schemas
