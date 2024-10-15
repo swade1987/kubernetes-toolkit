@@ -33,7 +33,7 @@ curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONF
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-FLUX=2.4.0
+FLUX=2.2.2
 printf "\nDownloading flux %s\n" "${FLUX}"
 curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/flux_${FLUX}_linux_amd64.tar.gz | \
 tar xz && mv flux /usr/local/bin/flux
@@ -89,12 +89,12 @@ mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shell
 shellcheck --version
 
 printf "\nFetching kubeval kubernetes json schemas for v1.%s.0\n" "$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+')"
-mkdir -p /usr/local/kubeval/schemas
+mkdir -p /tmp/kubeval/schemas
 git clone https://github.com/swade1987/kubernetes-json-schema.git
 # shellcheck disable=SC2046
-cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict /usr/local/kubeval/schemas
+cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict/* /tmp/kubeval/schemas
 rm -rf kubernetes-json-schema
 
 printf "\nFetching flux json schemas for v%s\n" "${FLUX}"
-mkdir -p /usr/local/flux/schemas
-curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /usr/local/flux/schemas
+mkdir -p /tmp/flux/schemas
+curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux/schemas
