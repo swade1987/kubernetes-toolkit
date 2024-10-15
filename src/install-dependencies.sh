@@ -89,12 +89,12 @@ mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shell
 shellcheck --version
 
 printf "\nFetching kubeval kubernetes json schemas for v1.%s.0\n" "$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+')"
-mkdir -p /tmp/kubeval/schemas
+mkdir -p /tmp/kubernetes-schemas/v1."$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+')".0-standalone-strict
 git clone https://github.com/swade1987/kubernetes-json-schema.git
 # shellcheck disable=SC2046
-cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict/* /tmp/kubeval/schemas
+cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict/* /tmp/kubernetes-schemas/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict
 rm -rf kubernetes-json-schema
 
 printf "\nFetching flux json schemas for v%s\n" "${FLUX}"
-mkdir -p /tmp/flux/schemas
-curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux/schemas
+mkdir -p /tmp/flux-schemas/master-standalone-strict
+curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-schemas/master-standalone-strict
