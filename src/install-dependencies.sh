@@ -33,7 +33,7 @@ curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONF
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-FLUX=2.2.2
+FLUX=2.3.0
 printf "\nDownloading flux %s\n" "${FLUX}"
 curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/flux_${FLUX}_linux_amd64.tar.gz | \
 tar xz && mv flux /usr/local/bin/flux
