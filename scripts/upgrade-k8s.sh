@@ -189,7 +189,7 @@ create_pull_request() {
 
     # Commit changes
     log "INFO" "Committing changes..."
-    git add .github/workflows/*.yml Makefile
+    git add .
     git commit -m "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
 
     # Push branch
