@@ -1,8 +1,8 @@
-PROJNAME 			:= kubernetes-toolkit
-KUBERNETES_VERSION 	:= 1.31.0
-GOOS          		?= $(if $(TARGETOS),$(TARGETOS),linux)
-GOARCH        		?= $(if $(TARGETARCH),$(TARGETARCH),amd64)
-BUILDPLATFORM 		?= $(GOOS)/$(GOARCH)
+PROJNAME := kubernetes-toolkit
+KUBERNETES_VERSION := 1.32.0
+GOOS ?= $(if $(TARGETOS),$(TARGETOS),linux)
+GOARCH ?= $(if $(TARGETARCH),$(TARGETARCH),amd64)
+BUILDPLATFORM ?= $(GOOS)/$(GOARCH)
 
 # ############################################################################################################
 # Local tasks

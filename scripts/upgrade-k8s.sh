@@ -189,8 +189,8 @@ create_pull_request() {
 
     # Commit changes
     log "INFO" "Committing changes..."
-    git add .github/workflows/*.yml Makefile
-    git commit -m "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
+    git add .
+    git commit -asm "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
 
     # Push branch
     log "INFO" "Pushing branch..."
@@ -200,8 +200,8 @@ create_pull_request() {
     log "INFO" "Creating pull request..."
     gh pr create \
         --title "$commit_message" \
-        --body "feat: Updating Kubernetes version to ${KUBERNETES_VERSION}." \
-        --base main \
+        --body "feat: updating kubernetes version to ${KUBERNETES_VERSION}." \
+        --base master \
         --head "$branch_name" || { log "ERROR" "Failed to create PR"; exit 1; }
 
     log "SUCCESS" "Successfully created pull request for Kubernetes version upgrade"
