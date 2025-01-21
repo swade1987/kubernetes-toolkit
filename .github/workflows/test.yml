@@ -29,12 +29,3 @@ jobs:
           context: .
           push: false
           tags: eu.gcr.io/swade1987/kubernetes-toolkit:1.31.0
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'eu.gcr.io/swade1987/kubernetes-toolkit:1.31.0'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'

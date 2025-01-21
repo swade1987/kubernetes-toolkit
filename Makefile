@@ -13,6 +13,15 @@ GOOGLE_COMPUTE_ZONE := europe-west2-a
 CIRCLE_BUILD_NUM ?="unknown"
 IMAGE := $(PROJNAME):$(KUBERNETES_VERSION)
 
+# ############################################################################################################
+# Local tasks
+# ############################################################################################################
+
+initialise:
+	pre-commit --version || brew install pre-commit
+	pre-commit install --install-hooks
+	pre-commit run -a
+
 #------------------------------------------------------------------
 # CI targets
 #------------------------------------------------------------------
