@@ -262,7 +262,7 @@ main() {
     show_config
     update_github_actions
     update_makefile
-#    create_pull_request
+    create_pull_request
 }
 
 # Run main function
