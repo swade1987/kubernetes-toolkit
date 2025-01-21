@@ -181,7 +181,7 @@ create_pull_request() {
 
     local whoami=$(whoami)
     local branch_name="${whoami}/upgrade-k8s-to-${KUBERNETES_VERSION}"
-    local commit_message="feat: Upgrading Kubernetes to v${KUBERNETES_VERSION}"
+    local commit_message="feat: upgrading Kubernetes to v${KUBERNETES_VERSION}"
 
     # Create and checkout branch
     log "INFO" "Creating and checking out branch..."
@@ -190,7 +190,7 @@ create_pull_request() {
     # Commit changes
     log "INFO" "Committing changes..."
     git add .
-    git commit -m "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
+    git commit -sm "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
 
     # Push branch
     log "INFO" "Pushing branch..."
@@ -201,7 +201,7 @@ create_pull_request() {
     gh pr create \
         --title "$commit_message" \
         --body "feat: Updating Kubernetes version to ${KUBERNETES_VERSION}." \
-        --base main \
+        --base master \
         --head "$branch_name" || { log "ERROR" "Failed to create PR"; exit 1; }
 
     log "SUCCESS" "Successfully created pull request for Kubernetes version upgrade"
