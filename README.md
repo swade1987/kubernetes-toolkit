@@ -45,4 +45,4 @@ The above command will install the `pre-commit` package and setup pre-commit che
 
 ## Contributing to the repository
 
-To contribute, please read the [contribution guidelines](CONTRIBUTING.md). You may also [report an issue](https://github.com/swade1987/flux2-kustomize-template/issues/new/choose).
+To contribute, please read the [contribution guidelines](CONTRIBUTING.md). You may also [report an issue](https://github.com/swade1987/kubernetes-toolkit/issues/new/choose).
