@@ -181,7 +181,7 @@ create_pull_request() {
 
     local whoami=$(whoami)
     local branch_name="${whoami}/upgrade-k8s-to-${KUBERNETES_VERSION}"
-    local commit_message="feat: Upgrading Kubernetes to v${KUBERNETES_VERSION}"
+    local commit_message="feat: upgrading kubernetes to v${KUBERNETES_VERSION}"
 
     # Create and checkout branch
     log "INFO" "Creating and checking out branch..."

@@ -4,7 +4,7 @@ set -uo errexit
 
 KUBECTL=$1
 printf "Downloading kubectl %s\n" "${KUBECTL}"
-curl -sL https://storage.googleapis.com/kubernetes-release/release/v"${KUBECTL}"/bin/linux/amd64/kubectl \
+curl -sL https://dl.k8s.io/release/v"${KUBECTL}"/bin/linux/amd64/kubectl \
 -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 kubectl version --client
 
