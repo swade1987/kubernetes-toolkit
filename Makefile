@@ -1,17 +1,8 @@
-#------------------------------------------------------------------
-# Project build information
-#------------------------------------------------------------------
-PROJNAME := kubernetes-toolkit
-KUBERNETES_VERSION := 1.31.0
-
-GCR_REPO := eu.gcr.io/swade1987
-GCLOUD_SERVICE_KEY ?="unknown"
-GCLOUD_SERVICE_EMAIL := circle-ci@swade1987.iam.gserviceaccount.com
-GOOGLE_PROJECT_ID := swade1987
-GOOGLE_COMPUTE_ZONE := europe-west2-a
-
-CIRCLE_BUILD_NUM ?="unknown"
-IMAGE := $(PROJNAME):$(KUBERNETES_VERSION)
+PROJNAME 			:= kubernetes-toolkit
+KUBERNETES_VERSION 	:= 1.31.0
+GOOS          		?= $(if $(TARGETOS),$(TARGETOS),linux)
+GOARCH        		?= $(if $(TARGETARCH),$(TARGETARCH),amd64)
+BUILDPLATFORM 		?= $(GOOS)/$(GOARCH)
 
 # ############################################################################################################
 # Local tasks
@@ -22,25 +13,10 @@ initialise:
 	pre-commit install --install-hooks
 	pre-commit run -a
 
-#------------------------------------------------------------------
-# CI targets
-#------------------------------------------------------------------
-
 build:
-	docker build \
+	docker buildx build --build-arg BUILDPLATFORM=$(BUILDPLATFORM) --build-arg TARGETARCH=$(GOARCH) \
 	--build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) \
-	-t $(IMAGE) .
-
-push-to-gcr: configure-gcloud-cli
-	docker tag $(IMAGE) $(GCR_REPO)/$(IMAGE)
-	gcloud docker -- push $(GCR_REPO)/$(IMAGE)
-	docker rmi $(GCR_REPO)/$(IMAGE)
-
-configure-gcloud-cli:
-	echo '$(GCLOUD_SERVICE_KEY)' | base64 --decode > /tmp/gcloud-service-key.json
-	gcloud auth activate-service-account $(GCLOUD_SERVICE_EMAIL) --key-file=/tmp/gcloud-service-key.json
-	gcloud --quiet config set project $(GOOGLE_PROJECT_ID)
-	gcloud --quiet config set compute/zone $(GOOGLE_COMPUTE_ZONE)
+	-t local/$(PROJNAME):$(KUBERNETES_VERSION) .
 
 scan: build
-	trivy --light -s "UNKNOWN,MEDIUM,HIGH,CRITICAL" --exit-code 1 $(IMAGE)
+	trivy --light -s "UNKNOWN,MEDIUM,HIGH,CRITICAL" --exit-code 1 local/$(PROJNAME):$(KUBERNETES_VERSION)

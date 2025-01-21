@@ -1,10 +1,13 @@
-name: test
+name: build
 
 on:
   pull_request:
 
+env:
+  KUBERNETES_VERSION: 1.31.0
+
 jobs:
-  scan:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Delete huge unnecessary tools folder
@@ -25,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           build-args: |
-            KUBERNETES_VERSION=1.31.0
+            KUBERNETES_VERSION=${{ env.KUBERNETES_VERSION }}
           context: .
           push: false
-          tags: eu.gcr.io/swade1987/kubernetes-toolkit:1.31.0
+          tags: eu.gcr.io/swade1987/kubernetes-toolkit:${{ env.KUBERNETES_VERSION }}
