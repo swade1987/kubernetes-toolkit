@@ -1,6 +1,6 @@
 # Kubernetes Toolkit 🛠️
 
-[![ci](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/main.yaml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/ci.yaml)
+[![release](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yaml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yaml)
 
 This container provides a comprehensive suite of tools for Kubernetes. It is designed to be used in CI/CD pipelines and local development environments.
 
@@ -55,6 +55,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
     - Automated with GitHub Actions ([pr-lint](https://github.com/amannn/action-semantic-pull-request))
 - Commits must be signed with [Developer Certificate of Origin (DCO)](https://developercertificate.org/)
     - Automated with GitHub App ([DCO](https://github.com/apps/dco))
+- Automatic [Semantic Releases](https://semantic-release.gitbook.io/)
 
 ## Getting started
 
