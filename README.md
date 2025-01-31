@@ -1,6 +1,7 @@
 # Kubernetes Toolkit 🛠️
 
-[![release](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yaml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yaml)
+[![release](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yml)
+[![image](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/image.yml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/image.yml)
 
 This container provides a comprehensive suite of tools for Kubernetes. It is designed to be used in CI/CD pipelines and local development environments.
 
