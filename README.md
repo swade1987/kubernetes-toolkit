@@ -2,25 +2,48 @@
 
 [![ci](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/main.yaml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/ci.yaml)
 
-Minimal docker image for running useful Kubernetes tooling.
+This container provides a comprehensive suite of tools for Kubernetes. It is designed to be used in CI/CD pipelines and local development environments.
 
 Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://eu.gcr.io/swade1987/kubernetes-toolkit).
 
-## Packages included
+## Included Tools/Schemas
 
-The docker container includes the following:
+### Core Kubernetes Tools
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/) (version passed as build argument)
+- [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.4.3)
+- [Helm v3](https://github.com/helm/helm) (v3.16.1)
+- [helm-docs](https://github.com/norwoodj/helm-docs)  (v1.14.2)
 
-- conftest (https://github.com/instrumenta/conftest)
-- flux (utility from https://github.com/fluxcd/flux)
-- Helm v2 (https://github.com/helm/helm)
-- Helm v3 (https://github.com/helm/helm)
-- istioctl (https://github.com/istio/istio)
-- jq (https://github.com/stedolan/jq)
-- kubectl (https://github.com/kubernetes/kubectl)
-- kubeseal (utility from https://github.com/bitnami-labs/sealed-secrets)
-- kubeval (https://github.com/instrumenta/kubeval)
-- kustomize (https://github.com/kubernetes-sigs/kustomize)
-- yq (https://github.com/mikefarah/yq)
+### Validation & Testing
+- [kubeconform](https://github.com/yannh/kubeconform) (v0.6.7)
+- [conftest](https://github.com/open-policy-agent/conftest) (v0.55.0)
+- [pluto](https://github.com/FairwindsOps/pluto) (v5.20.3)
+
+### GitOps & Service Mesh
+- [flux](https://github.com/fluxcd/flux2) (v2.3.0)
+- [istioctl](https://github.com/istio/istio) (v1.23.1)
+
+### Configuration Processing
+- [yq](https://github.com/mikefarah/yq) (v4.44.3)
+- [jq](https://github.com/stedolan/jq) (v1.7.1)
+
+### Development & Linting Tools
+- [shellcheck](https://github.com/koalaman/shellcheck) (v0.10.0)
+- [jsonlint](https://github.com/zaach/jsonlint) (v1.6.3)
+
+### Additional Components
+- Python 3 with development tools
+- Node.js and npm
+- Required build dependencies (gcc, libxslt-dev, libxml2-dev, etc.)
+
+### Schema Support
+- Kubernetes JSON schemas (version matches kubectl client version)
+- Flux CRD schemas (matching installed Flux version)
+
+## Notes
+- All binaries are installed in `/usr/local/bin/`
+- Kubernetes schemas are stored in `/tmp/kubernetes-schemas/`
+- Flux schemas are stored in `/tmp/flux-schemas/`
 
 ## Features
 
