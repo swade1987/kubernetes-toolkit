@@ -3,29 +3,62 @@ name: ci
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
+      - 'next'
 
 env:
   KUBERNETES_VERSION: 1.32.0
 
 jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm install -g semantic-release @semantic-release/exec
+
+      - name: Semantic Release
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
   build-and-push:
+    needs: release
+    if: needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
+
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Login to GCR
         uses: docker/login-action@v3
         with:
           registry: eu.gcr.io
           username: _json_key
           password: ${{ secrets.PUBLIC_GCR_JSON_KEY }}
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
@@ -33,4 +66,7 @@ jobs:
             KUBERNETES_VERSION=${{ env.KUBERNETES_VERSION }}
           context: .
           push: true
-          tags: eu.gcr.io/swade1987/kubernetes-toolkit:${{ env.KUBERNETES_VERSION }}
+          tags: |
+            eu.gcr.io/swade1987/kubernetes-toolkit:latest
+            eu.gcr.io/swade1987/kubernetes-toolkit:${{ needs.release.outputs.new_release_version }}
+            eu.gcr.io/swade1987/kubernetes-toolkit:${{ needs.release.outputs.new_release_version }}-k8s-${{ env.KUBERNETES_VERSION }}
