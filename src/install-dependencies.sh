@@ -2,9 +2,9 @@
 
 set -uo errexit
 
-KUBECTL=$1
-printf "Downloading kubectl %s\n" "${KUBECTL}"
-curl -sL https://dl.k8s.io/release/v"${KUBECTL}"/bin/linux/amd64/kubectl \
+KUBERNETES_VERSION=$1
+printf "Downloading kubectl %s\n" "${KUBERNETES_VERSION}"
+curl -sL https://dl.k8s.io/release/v"${KUBERNETES_VERSION}"/bin/linux/amd64/kubectl \
 -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 kubectl version --client
 
@@ -88,12 +88,11 @@ wget https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK}/shel
 mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shellcheck-${SHELLCHECK}
 shellcheck --version
 
-printf "\nFetching kubeval kubernetes json schemas for v1.%s.0\n" "$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+')"
-mkdir -p /tmp/kubernetes-schemas/v1."$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+')".0-standalone-strict
-git clone https://github.com/swade1987/kubernetes-json-schema.git
-# shellcheck disable=SC2046
-cp -R kubernetes-json-schema/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict/* /tmp/kubernetes-schemas/v1.$(kubectl version --client=true -o=json | jq -r '.clientVersion.minor' | tr -d '+').0-standalone-strict
-rm -rf kubernetes-json-schema
+printf "\nFetching kubernetes json schemas for v%s\n" "${KUBERNETES_VERSION}"
+mkdir -p /tmp/kubernetes-schemas/v"${KUBERNETES_VERSION}"-standalone-strict && \
+curl -sL "https://github.com/swade1987/k8s-schemas/releases/download/v${KUBERNETES_VERSION}/kubernetes-json-schema-v${KUBERNETES_VERSION}-standalone-strict.zip" > /tmp/schema.zip && \
+unzip -o /tmp/schema.zip -d /tmp/kubernetes-schemas && \
+rm /tmp/schema.zip
 
 printf "\nFetching flux json schemas for v%s\n" "${FLUX}"
 mkdir -p /tmp/flux-schemas/master-standalone-strict
