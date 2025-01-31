@@ -32,13 +32,8 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [shellcheck](https://github.com/koalaman/shellcheck) (v0.10.0)
 - [jsonlint](https://github.com/zaach/jsonlint) (v1.6.3)
 
-### Additional Components
-- Python 3 with development tools
-- Node.js and npm
-- Required build dependencies (gcc, libxslt-dev, libxml2-dev, etc.)
-
 ### Schema Support
-- Kubernetes JSON schemas (version matches kubectl client version)
+- Kubernetes JSON schemas (version matches kubectl client version) obtained via [k8s-schemas](https://github.com/swade1987/k8s-schemas).
 - Flux CRD schemas (matching installed Flux version)
 
 ## Notes
