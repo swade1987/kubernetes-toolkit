@@ -55,6 +55,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
     - Automated with GitHub Actions ([pr-lint](https://github.com/amannn/action-semantic-pull-request))
 - Commits must be signed with [Developer Certificate of Origin (DCO)](https://developercertificate.org/)
     - Automated with GitHub App ([DCO](https://github.com/apps/dco))
+- Automatic [Semantic Releases](https://semantic-release.gitbook.io/)
 
 ## Getting started
 
