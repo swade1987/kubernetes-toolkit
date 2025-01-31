@@ -201,7 +201,7 @@ create_pull_request() {
     gh pr create \
         --title "$commit_message" \
         --body "feat: updating kubernetes version to ${KUBERNETES_VERSION}." \
-        --base master \
+        --base main \
         --head "$branch_name" || { log "ERROR" "Failed to create PR"; exit 1; }
 
     log "SUCCESS" "Successfully created pull request for Kubernetes version upgrade"
