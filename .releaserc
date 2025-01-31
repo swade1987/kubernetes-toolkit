@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    "@semantic-release/github",
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+  ],
+  "branches": [
+    {
+      "name": "main"
+    },
+    {
+      "name": "next",
+      "prerelease": true
+    }
+  ]
+}
