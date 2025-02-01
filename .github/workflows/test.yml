@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  KUBERNETES_VERSION: 1.32.0
+  KUBERNETES_VERSION: 1.32.1
 
 jobs:
   build:
