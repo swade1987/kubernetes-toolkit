@@ -1,12 +1,9 @@
 name: Monitor Kubernetes Versions
 
 on:
-  pull_request:
-
-#on:
-#  schedule:
-#    - cron: '0 0 * * *'  # Run daily at midnight
-#  workflow_dispatch:  # Allow manual triggers
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+  workflow_dispatch:  # Allow manual triggers
 
 jobs:
   check-k8s-version:
