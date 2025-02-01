@@ -31,13 +31,12 @@ jobs:
       - name: Get latest K8s versions
         id: latest
         run: |
-          # Get versions and sort them in ascending order (oldest first)
-          VERSIONS=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases | \
-            jq -r '.[].tag_name' | \
-            grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | \
-            sed 's/^v//' | \
-            sort -V | \  # Changed from sort -rV to sort -V
-            head -5)     # Get more versions to ensure we don't miss intermediates
+          VERSIONS=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases |
+                    jq -r '.[].tag_name' |
+                    grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' |
+                    sed 's/^v//' |
+                    sort -rV | \
+                    head -2)
           echo "versions<<EOF" >> "$GITHUB_OUTPUT"
           echo "$VERSIONS" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
