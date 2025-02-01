@@ -59,11 +59,9 @@ jobs:
 
           echo "Reading available versions:"
           while IFS= read -r VERSION; do
-            [ -z "$VERSION" ] && continue
             echo "Checking version: $VERSION"
 
             if [[ "$VERSION" > "$CURRENT" ]]; then
-              # Skip if version has an existing PR
               if [[ "${{ steps.prs.outputs.versions }}" != "none" ]] && \
                  echo "${{ steps.prs.outputs.versions }}" | grep -q "^${VERSION}$"; then
                 echo "Version ${VERSION} already has an open PR"
@@ -76,7 +74,7 @@ jobs:
             else
               echo "Version ${VERSION} is not newer than ${CURRENT}"
             fi
-          done <<< "${{ steps.versions.outputs.versions }}"
+          done < versions.txt
 
       - name: Configure Git
         if: steps.process.outputs.version != ''
