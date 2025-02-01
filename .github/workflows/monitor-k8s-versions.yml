@@ -8,12 +8,6 @@ on:
 #    - cron: '0 0 * * *'  # Run daily at midnight
 #  workflow_dispatch:  # Allow manual triggers
 
-name: Monitor Kubernetes Versions
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
-
 jobs:
   check-k8s-version:
     runs-on: ubuntu-latest
