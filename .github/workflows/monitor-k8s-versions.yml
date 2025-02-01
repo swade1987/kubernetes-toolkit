@@ -19,13 +19,30 @@ jobs:
         run: |
           gh auth login --with-token <<< "${{ secrets.RELEASE_TOKEN }}"
 
+      - name: Check existing PRs
+        id: check-prs
+        run: |
+          EXISTING_PRS=$(gh pr list --json title --jq '.[] | select(.title | contains("upgrading kubernetes to v")) | .title')
+          if [ -n "$EXISTING_PRS" ]; then
+            echo "Found existing Kubernetes upgrade PRs:"
+            echo "$EXISTING_PRS"
+            echo "Skipping version check until existing PRs are merged"
+            echo "has_prs=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          else
+            echo "No existing Kubernetes upgrade PRs found"
+            echo "has_prs=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Get current version
+        if: steps.check-prs.outputs.has_prs == 'false'
         id: current
         run: |
           CURRENT_VERSION=$(grep 'KUBERNETES_VERSION :=' Makefile | awk '{print $3}')
           echo "version=${CURRENT_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Get K8s versions
+        if: steps.check-prs.outputs.has_prs == 'false'
         id: versions
         run: |
           # Get and sort versions
@@ -38,15 +55,8 @@ jobs:
           echo "Available versions:"
           cat $GITHUB_WORKSPACE/k8s_versions.txt
 
-      - name: Get existing PRs
-        id: prs
-        run: |
-          PR_VERSIONS=$(gh pr list --json title --jq '.[] | select(.title | contains("upgrading kubernetes to v")) | .title' | \
-            grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "none")
-          echo "Existing PR versions: ${PR_VERSIONS}"
-          echo "versions=${PR_VERSIONS}" >> "$GITHUB_OUTPUT"
-
       - name: Process versions
+        if: steps.check-prs.outputs.has_prs == 'false'
         id: process
         run: |
           CURRENT="${{ steps.current.outputs.version }}"
@@ -75,13 +85,13 @@ jobs:
           rm $GITHUB_WORKSPACE/k8s_versions.txt
 
       - name: Configure Git
-        if: steps.process.outputs.version != ''
+        if: steps.check-prs.outputs.has_prs == 'false' && steps.process.outputs.version != ''
         run: |
           git config user.name "Steve Wade"
           git config user.email "steven@stevenwade.co.uk"
 
       - name: Run upgrade script
-        if: steps.process.outputs.version != ''
+        if: steps.check-prs.outputs.has_prs == 'false' && steps.process.outputs.version != ''
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
