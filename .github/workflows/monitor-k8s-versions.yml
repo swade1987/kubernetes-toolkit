@@ -1,0 +1,88 @@
+name: Monitor Kubernetes Versions
+
+on:
+  pull_request:
+
+#on:
+#  schedule:
+#    - cron: '0 0 * * *'  # Run daily at midnight
+#  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  check-k8s-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Get current and available K8s versions
+        id: versions
+        run: |
+          # Get current version from Makefile
+          CURRENT_VERSION=$(grep 'KUBERNETES_VERSION :=' Makefile | awk '{print $3}')
+          echo "current=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+
+          # Get all recent stable K8s versions
+          VERSIONS=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases | \
+            jq -r '.[].tag_name' | \
+            grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | \
+            sed 's/^v//' | \
+            sort -rV | \
+            head -2)  # Get top 2 versions
+          echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
+
+          # Get versions from existing PRs
+          EXISTING_PRS=$(gh pr list --json title --jq '.[] | select(.title | contains("updating kubernetes to v")) | .title' | \
+            grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+          echo "existing_prs=${EXISTING_PRS:-none}" >> $GITHUB_OUTPUT
+
+      - name: Process versions
+        id: process
+        run: |
+          CURRENT_VERSION="${{ steps.versions.outputs.current }}"
+          EXISTING_PRS="${{ steps.versions.outputs.existing_prs }}"
+
+          # Convert newline-separated versions to array
+          IFS=$'\n' read -r -d '' -a ALL_VERSIONS <<< "${{ steps.versions.outputs.versions }}"
+
+          for VERSION in "${ALL_VERSIONS[@]}"; do
+            # Skip if version is already in a PR
+            if [[ "${EXISTING_PRS}" != "none" ]] && echo "${EXISTING_PRS}" | grep -q "^${VERSION}$"; then
+              echo "Version ${VERSION} already has an open PR"
+              continue
+            fi
+
+            # Skip if version is older or equal to current version
+            if [[ "$(echo -e "${VERSION}\n${CURRENT_VERSION}" | sort -V | tail -n1)" == "${CURRENT_VERSION}" ]]; then
+              echo "Version ${VERSION} is not newer than current version ${CURRENT_VERSION}"
+              continue
+            fi
+
+            # Found a version to update to
+            echo "version_to_update=${VERSION}" >> $GITHUB_OUTPUT
+            break
+          done
+
+      - name: Configure Git
+        if: steps.process.outputs.version_to_update != ''
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Run upgrade script
+        if: steps.process.outputs.version_to_update != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./scripts/upgrade-k8s.sh
+          ./scripts/upgrade-k8s.sh --execute ${{ steps.process.outputs.version_to_update }}
