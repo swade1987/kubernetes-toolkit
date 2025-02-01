@@ -8,22 +8,25 @@ on:
 #    - cron: '0 0 * * *'  # Run daily at midnight
 #  workflow_dispatch:  # Allow manual triggers
 
+name: Monitor Kubernetes Versions
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
 jobs:
   check-k8s-version:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT_GITHUB_TOKEN }}
 
       - name: Setup GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+          gh auth login --with-token <<< "${{ secrets.PAT_GITHUB_TOKEN }}"
 
       - name: Get current version
         id: current
@@ -34,12 +37,13 @@ jobs:
       - name: Get latest K8s versions
         id: latest
         run: |
+          # Get versions and sort them in ascending order (oldest first)
           VERSIONS=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases | \
             jq -r '.[].tag_name' | \
             grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | \
             sed 's/^v//' | \
-            sort -rV | \
-            head -2)
+            sort -V | \  # Changed from sort -rV to sort -V
+            head -5)     # Get more versions to ensure we don't miss intermediates
           echo "versions<<EOF" >> "$GITHUB_OUTPUT"
           echo "$VERSIONS" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -57,9 +61,20 @@ jobs:
           CURRENT="${{ steps.current.outputs.version }}"
           echo "Current version: $CURRENT"
 
+          # Read versions into array and sort them
+          VERSIONS_ARRAY=()
           while IFS= read -r VERSION; do
-            # Skip empty lines
             [ -z "$VERSION" ] && continue
+            VERSIONS_ARRAY+=("$VERSION")
+          done <<< "${{ steps.latest.outputs.versions }}"
+
+          # Process versions in ascending order
+          for VERSION in "${VERSIONS_ARRAY[@]}"; do
+            # Skip if not newer than current
+            if ! [[ "${VERSION}" > "${CURRENT}" ]]; then
+              echo "Version ${VERSION} is not newer than ${CURRENT}"
+              continue
+            fi
 
             # Skip if version has an existing PR
             if [[ "${{ steps.prs.outputs.versions }}" != "none" ]] && \
@@ -68,27 +83,22 @@ jobs:
               continue
             fi
 
-            # Skip if version is not newer
-            if ! [[ "${VERSION}" > "${CURRENT}" ]]; then
-              echo "Version ${VERSION} is not newer than ${CURRENT}"
-              continue
-            fi
-
+            # Found the next version to update to
             echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
             echo "Found new version to update to: ${VERSION}"
             break
-          done <<< "${{ steps.latest.outputs.versions }}"
+          done
 
       - name: Configure Git
         if: steps.process.outputs.version != ''
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "Steve Wade"
+          git config user.email "steven@stevenwade.co.uk"
 
       - name: Run upgrade script
         if: steps.process.outputs.version != ''
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           chmod +x ./scripts/upgrade-k8s.sh
           ./scripts/upgrade-k8s.sh --execute ${{ steps.process.outputs.version }}
