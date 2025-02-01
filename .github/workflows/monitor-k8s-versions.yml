@@ -1,0 +1,89 @@
+name: Monitor Kubernetes Versions
+
+on:
+  pull_request:
+
+#on:
+#  schedule:
+#    - cron: '0 0 * * *'  # Run daily at midnight
+#  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  check-k8s-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Setup GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.RELEASE_TOKEN }}"
+
+      - name: Get current version
+        id: current
+        run: |
+          CURRENT_VERSION=$(grep 'KUBERNETES_VERSION :=' Makefile | awk '{print $3}')
+          echo "version=${CURRENT_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Get K8s versions
+        id: versions
+        run: |
+          # Get and sort versions
+          curl -s https://api.github.com/repos/kubernetes/kubernetes/releases |
+          jq -r '.[].tag_name' |
+          grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' |
+          sed 's/^v//' |
+          sort -V > $GITHUB_WORKSPACE/k8s_versions.txt
+
+          echo "Available versions:"
+          cat $GITHUB_WORKSPACE/k8s_versions.txt
+
+      - name: Get existing PRs
+        id: prs
+        run: |
+          PR_VERSIONS=$(gh pr list --json title --jq '.[] | select(.title | contains("upgrading kubernetes to v")) | .title' | \
+            grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "none")
+          echo "Existing PR versions: ${PR_VERSIONS}"
+          echo "versions=${PR_VERSIONS}" >> "$GITHUB_OUTPUT"
+
+      - name: Process versions
+        id: process
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          echo "Current version: $CURRENT"
+
+          echo "Reading available versions:"
+          while IFS= read -r VERSION; do
+            echo "Checking version: $VERSION"
+
+            if [[ "$VERSION" > "$CURRENT" ]]; then
+              if [[ "${{ steps.prs.outputs.versions }}" != "none" ]] && \
+                 echo "${{ steps.prs.outputs.versions }}" | grep -q "^${VERSION}$"; then
+                echo "Version ${VERSION} already has an open PR"
+                continue
+              fi
+
+              echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+              echo "Found new version to update to: ${VERSION}"
+              break
+            else
+              echo "Version ${VERSION} is not newer than ${CURRENT}"
+            fi
+          done < $GITHUB_WORKSPACE/k8s_versions.txt
+
+      - name: Configure Git
+        if: steps.process.outputs.version != ''
+        run: |
+          git config user.name "Steve Wade"
+          git config user.email "steven@stevenwade.co.uk"
+
+      - name: Run upgrade script
+        if: steps.process.outputs.version != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          chmod +x ./scripts/upgrade-k8s.sh
+          ./scripts/upgrade-k8s.sh --execute ${{ steps.process.outputs.version }}
