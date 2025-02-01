@@ -28,20 +28,18 @@ jobs:
           CURRENT_VERSION=$(grep 'KUBERNETES_VERSION :=' Makefile | awk '{print $3}')
           echo "version=${CURRENT_VERSION}" >> "$GITHUB_OUTPUT"
 
-      - name: Get latest K8s versions
-        id: latest
+      - name: Get K8s versions
+        id: versions
         run: |
-          VERSIONS=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases |
-                    jq -r '.[].tag_name' |
-                    grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' |
-                    sed 's/^v//' |
-                    sort -rV | \
-                    head -2)
+          # Get and sort versions
+          curl -s https://api.github.com/repos/kubernetes/kubernetes/releases |
+          jq -r '.[].tag_name' |
+          grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' |
+          sed 's/^v//' |
+          sort -V > $GITHUB_WORKSPACE/k8s_versions.txt
+
           echo "Available versions:"
-          echo "$VERSIONS"
-          echo "versions<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$VERSIONS" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+          cat $GITHUB_WORKSPACE/k8s_versions.txt
 
       - name: Get existing PRs
         id: prs
@@ -74,7 +72,7 @@ jobs:
             else
               echo "Version ${VERSION} is not newer than ${CURRENT}"
             fi
-          done < versions.txt
+          done < $GITHUB_WORKSPACE/k8s_versions.txt
 
       - name: Configure Git
         if: steps.process.outputs.version != ''
