@@ -74,6 +74,9 @@ jobs:
             fi
           done < $GITHUB_WORKSPACE/k8s_versions.txt
 
+          # Clean up temporary file
+          rm $GITHUB_WORKSPACE/k8s_versions.txt
+
       - name: Configure Git
         if: steps.process.outputs.version != ''
         run: |
