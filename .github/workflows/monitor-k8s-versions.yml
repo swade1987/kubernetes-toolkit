@@ -37,6 +37,8 @@ jobs:
                     sed 's/^v//' |
                     sort -rV | \
                     head -2)
+          echo "Available versions:"
+          echo "$VERSIONS"
           echo "versions<<EOF" >> "$GITHUB_OUTPUT"
           echo "$VERSIONS" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -46,6 +48,7 @@ jobs:
         run: |
           PR_VERSIONS=$(gh pr list --json title --jq '.[] | select(.title | contains("upgrading kubernetes to v")) | .title' | \
             grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "none")
+          echo "Existing PR versions: ${PR_VERSIONS}"
           echo "versions=${PR_VERSIONS}" >> "$GITHUB_OUTPUT"
 
       - name: Process versions
@@ -54,53 +57,26 @@ jobs:
           CURRENT="${{ steps.current.outputs.version }}"
           echo "Current version: $CURRENT"
 
-          # Convert version string to array for proper comparison
-          function version_to_array() {
-            echo "$1" | tr '.' ' '
-          }
-
-          # Compare two version arrays
-          function compare_versions() {
-            read -ra v1 <<< "$(version_to_array "$1")"
-            read -ra v2 <<< "$(version_to_array "$2")"
-
-            for ((i=0; i<${#v1[@]}; i++)); do
-              if ((v1[i] > v2[i])); then
-                echo 1; return
-              elif ((v1[i] < v2[i])); then
-                echo -1; return
-              fi
-            done
-            echo 0
-          }
-
-          # Find next version
-          NEXT_VERSION=""
+          echo "Reading available versions:"
           while IFS= read -r VERSION; do
             [ -z "$VERSION" ] && continue
+            echo "Checking version: $VERSION"
 
-            # Check if this version is newer than current
-            if [ "$(compare_versions "$VERSION" "$CURRENT")" -le 0 ]; then
-              continue
-            fi
+            if [[ "$VERSION" > "$CURRENT" ]]; then
+              # Skip if version has an existing PR
+              if [[ "${{ steps.prs.outputs.versions }}" != "none" ]] && \
+                 echo "${{ steps.prs.outputs.versions }}" | grep -q "^${VERSION}$"; then
+                echo "Version ${VERSION} already has an open PR"
+                continue
+              fi
 
-            # Skip if version has an existing PR
-            if [[ "${{ steps.prs.outputs.versions }}" != "none" ]] && \
-               echo "${{ steps.prs.outputs.versions }}" | grep -q "^${VERSION}$"; then
-              echo "Version ${VERSION} already has an open PR"
-              continue
-            fi
-
-            # If we haven't set a next version yet, or if this version is older than our current next version
-            if [ -z "$NEXT_VERSION" ] || [ "$(compare_versions "$VERSION" "$NEXT_VERSION")" -lt 0 ]; then
-              NEXT_VERSION="$VERSION"
+              echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+              echo "Found new version to update to: ${VERSION}"
+              break
+            else
+              echo "Version ${VERSION} is not newer than ${CURRENT}"
             fi
           done <<< "${{ steps.versions.outputs.versions }}"
-
-          if [ -n "$NEXT_VERSION" ]; then
-            echo "version=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
-            echo "Found new version to update to: ${NEXT_VERSION}"
-          fi
 
       - name: Configure Git
         if: steps.process.outputs.version != ''
