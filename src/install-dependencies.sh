@@ -79,7 +79,7 @@ PLUTO=5.20.3
 printf "\nDownloading pluto %s\n" "${PLUTO}"
 curl -sL https://github.com/FairwindsOps/pluto/releases/download/v${PLUTO}/pluto_${PLUTO}_linux_amd64.tar.gz | \
 tar xz && mv pluto /usr/local/bin/pluto
-rm -rf pluto_5.0.0_linux_amd64.tar.gz
+rm -rf pluto_${PLUTO}_linux_amd64.tar.gz
 pluto version
 
 SHELLCHECK=v0.10.0
@@ -87,6 +87,13 @@ printf "\ndownloading shellcheck %s \n" "${SHELLCHECK}"
 wget https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK}/shellcheck-${SHELLCHECK}.linux.x86_64.tar.xz -O - | tar xJf -
 mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shellcheck-${SHELLCHECK}
 shellcheck --version
+
+TRIVY=0.59.0
+printf "\nDownloading trivy %s\n" "${TRIVY}"
+curl -sL https://github.com/aquasecurity/trivy/releases/download/v${TRIVY}/trivy_${TRIVY}_Linux-64bit.tar.gz | \
+tar xz && mv trivy /usr/local/bin/trivy
+rm -rf trivy_${TRIVY}_Linux-64bit.tar.gz
+trivy version
 
 printf "\nFetching kubernetes json schemas for v%s\n" "${KUBERNETES_VERSION}"
 mkdir -p /tmp/kubernetes-schemas/v"${KUBERNETES_VERSION}"-standalone-strict && \
