@@ -3,16 +3,20 @@ LABEL MAINTAINER="Steven Wade <steven@stevenwade.co.uk>"
 
 ARG KUBERNETES_VERSION="Unknown"
 
-# Install necessary tooling
-RUN apk add --no-cache \
+# Enable Edge Community Repo
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
+# Install necessary tooling with a specific Buildah version
+RUN apk update && apk add --no-cache \
   curl \
   bash \
+  buildah=1.38.1-r0 \
   execline \
   findutils \
   git \
   make \
-  openssh-client \
-  && rm -rf /var/cache/apk/*
+  openssh-client && \
+  rm -rf /var/cache/apk/*
 
 # Install Python 3
 RUN apk add --update python3 py3-pip
