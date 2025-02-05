@@ -19,6 +19,9 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [kubeconform](https://github.com/yannh/kubeconform) (v0.6.7)
 - [conftest](https://github.com/open-policy-agent/conftest) (v0.55.0)
 - [pluto](https://github.com/FairwindsOps/pluto) (v5.20.3)
+
+### Container Tools
+- [buildah](https://github.com/containers/buildah) (1.38.1)
 - [trivy](https://github.com/aquasecurity/trivy) (v0.59.0)
 
 ### GitOps & Service Mesh
