@@ -10,7 +10,6 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repo
 RUN apk update && apk add --no-cache \
   curl \
   bash \
-  buildah=1.38.1-r0 \
   execline \
   findutils \
   git \
