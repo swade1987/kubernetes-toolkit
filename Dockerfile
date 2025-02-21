@@ -1,4 +1,4 @@
-FROM alpine:3.21.2
+FROM alpine:3.21.3
 LABEL MAINTAINER="Steven Wade <steven@stevenwade.co.uk>"
 
 ARG KUBERNETES_VERSION="Unknown"
