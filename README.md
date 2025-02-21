@@ -11,8 +11,8 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 
 ### Core Kubernetes Tools
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) (version passed as build argument)
-- [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.4.3)
-- [Helm v3](https://github.com/helm/helm) (v3.16.1)
+- [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.6.0)
+- [Helm v3](https://github.com/helm/helm) (v3.17.1)
 - [helm-docs](https://github.com/norwoodj/helm-docs)  (v1.14.2)
 
 ### Validation & Testing
