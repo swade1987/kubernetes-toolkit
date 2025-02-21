@@ -8,13 +8,13 @@ curl -sL https://dl.k8s.io/release/v"${KUBERNETES_VERSION}"/bin/linux/amd64/kube
 -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 kubectl version --client
 
-KUSTOMIZE=5.4.3
+KUSTOMIZE=5.6.0
 printf "\nDownloading kustomize %s\n" "${KUSTOMIZE}"
 curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE}/kustomize_v${KUSTOMIZE}_linux_amd64.tar.gz | \
 tar xz && mv kustomize /usr/local/bin/kustomize
 kustomize version
 
-HELM_V3=3.16.1
+HELM_V3=3.17.1
 printf "\nDownloading helm %s\n" "${HELM_V3}"
 curl -sSL https://get.helm.sh/helm-v${HELM_V3}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln -s /usr/local/bin/helmv3 /usr/local/bin/helm
@@ -33,7 +33,7 @@ curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONF
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-FLUX=2.3.0
+FLUX=2.5.0
 printf "\nDownloading flux %s\n" "${FLUX}"
 curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/flux_${FLUX}_linux_amd64.tar.gz | \
 tar xz && mv flux /usr/local/bin/flux
