@@ -25,6 +25,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 
 ### GitOps & Service Mesh
 - [flux](https://github.com/fluxcd/flux2) (v2.5.1)
+- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.16.0)
 - [istioctl](https://github.com/istio/istio) (v1.23.1)
 
 ### Configuration Processing
@@ -38,11 +39,13 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 ### Schema Support
 - Kubernetes JSON schemas (version matches kubectl client version) obtained via [k8s-schemas](https://github.com/swade1987/k8s-schemas).
 - Flux CRD schemas (matching installed Flux version)
+- Flux Operator CRD schemas (matching installed Flux Operator version)
 
 ## Notes
 - All binaries are installed in `/usr/local/bin/`
 - Kubernetes schemas are stored in `/tmp/kubernetes-schemas/`
 - Flux schemas are stored in `/tmp/flux-schemas/`
+- Flux Operator schemas are stored in `/tmp/flux-operator-schemas/`
 
 ## Features
 
