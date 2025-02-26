@@ -108,4 +108,4 @@ curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.
 FLUX_OPERATOR=0.16.0
 printf "\nFetching flux operator json schemas for v%s\n" "${FLUX_OPERATOR}"
 mkdir -p /tmp/flux-operator-schemas/master-standalone-strict
-curl -sL https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-operator-schemas/master-standalone-strict
+curl -sL https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v${FLUX_OPERATOR}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-operator-schemas/master-standalone-strict
