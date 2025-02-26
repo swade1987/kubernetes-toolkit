@@ -40,12 +40,6 @@ tar xz && mv flux /usr/local/bin/flux
 rm -rf flux_${FLUX}
 flux version --client
 
-FLUX_OPERATOR=0.16.0
-printf "\nDownloading flux operator %s\n" "${FLUX_OPERATOR}"
-curl -sL https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v${FLUX_OPERATOR}/flux-operator_${FLUX_OPERATOR}_linux_amd64.tar.gz | \
-tar xz && mv flux-operator /usr/local/bin/flux-operator
-flux-operator version --client
-
 ISTIOCTL=1.23.1
 # shellcheck disable=SC2059
 printf "\nDownloading istioctl %s\n" "${ISTIOCTL}"
@@ -111,6 +105,7 @@ printf "\nFetching flux json schemas for v%s\n" "${FLUX}"
 mkdir -p /tmp/flux-schemas/master-standalone-strict
 curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-schemas/master-standalone-strict
 
+FLUX_OPERATOR=0.16.0
 printf "\nFetching flux operator json schemas for v%s\n" "${FLUX_OPERATOR}"
 mkdir -p /tmp/flux-operator-schemas/master-standalone-strict
 curl -sL https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v${FLUX}/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-operator-schemas/master-standalone-strict
