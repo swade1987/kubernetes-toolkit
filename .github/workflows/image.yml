@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  KUBERNETES_VERSION: 1.32.2
+  KUBERNETES_VERSION: 1.32.3
 
 jobs:
   build-and-push:
