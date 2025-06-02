@@ -24,9 +24,9 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [trivy](https://github.com/aquasecurity/trivy) (v0.59.0)
 
 ### GitOps & Service Mesh
-- [flux](https://github.com/fluxcd/flux2) (v2.6.0)
-- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.16.0)
-- [istioctl](https://github.com/istio/istio) (v1.23.1)
+- [flux](https://github.com/fluxcd/flux2) (v2.6.1)
+- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.21.0)
+- [istioctl](https://github.com/istio/istio) (v1.26.1)
 
 ### Configuration Processing
 - [yq](https://github.com/mikefarah/yq) (v4.44.3)
