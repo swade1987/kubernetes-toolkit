@@ -33,14 +33,14 @@ curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONF
 tar xz && mv conftest /usr/local/bin/conftest
 conftest --version
 
-FLUX=2.6.0
+FLUX=2.6.1
 printf "\nDownloading flux %s\n" "${FLUX}"
 curl -sL https://github.com/fluxcd/flux2/releases/download/v${FLUX}/flux_${FLUX}_linux_amd64.tar.gz | \
 tar xz && mv flux /usr/local/bin/flux
 rm -rf flux_${FLUX}
 flux version --client
 
-ISTIOCTL=1.23.1
+ISTIOCTL=1.26.1
 # shellcheck disable=SC2059
 printf "\nDownloading istioctl %s\n" "${ISTIOCTL}"
 curl -sL https://github.com/istio/istio/releases/download/${ISTIOCTL}/istioctl-${ISTIOCTL}-linux-amd64.tar.gz | \
