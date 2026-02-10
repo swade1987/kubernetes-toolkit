@@ -11,22 +11,22 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 
 ### Core Kubernetes Tools
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) (version passed as build argument)
-- [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.6.0)
-- [Helm v3](https://github.com/helm/helm) (v3.17.1)
+- [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.8.1)
+- [Helm v3](https://github.com/helm/helm) (v3.19.2)
 - [helm-docs](https://github.com/norwoodj/helm-docs)  (v1.14.2)
 
 ### Validation & Testing
-- [kubeconform](https://github.com/yannh/kubeconform) (v0.6.7)
-- [conftest](https://github.com/open-policy-agent/conftest) (v0.55.0)
-- [pluto](https://github.com/FairwindsOps/pluto) (v5.20.3)
+- [kubeconform](https://github.com/yannh/kubeconform) (v0.7.0)
+- [conftest](https://github.com/open-policy-agent/conftest) (v0.66.0)
+- [pluto](https://github.com/FairwindsOps/pluto) (v5.22.7)
 
 ### Container Tools
-- [trivy](https://github.com/aquasecurity/trivy) (v0.59.0)
+- [trivy](https://github.com/aquasecurity/trivy) (v0.69.1)
 
 ### GitOps & Service Mesh
-- [flux](https://github.com/fluxcd/flux2) (v2.6.1)
-- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.21.0)
-- [istioctl](https://github.com/istio/istio) (v1.26.1)
+- [flux](https://github.com/fluxcd/flux2) (v2.7.5)
+- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.41.0)
+- [istioctl](https://github.com/istio/istio) (v1.28.3)
 
 ### Configuration Processing
 - [yq](https://github.com/mikefarah/yq) (v4.44.3)

@@ -19,4 +19,4 @@ build:
 	-t local/$(PROJNAME):$(KUBERNETES_VERSION) .
 
 scan: build
-	trivy --light -s "UNKNOWN,MEDIUM,HIGH,CRITICAL" --exit-code 1 local/$(PROJNAME):$(KUBERNETES_VERSION)
+	trivy image local/$(PROJNAME):$(KUBERNETES_VERSION) -s "UNKNOWN,MEDIUM,HIGH,CRITICAL" --exit-code 1
