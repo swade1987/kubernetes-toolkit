@@ -88,7 +88,7 @@ wget https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK}/shel
 mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shellcheck-${SHELLCHECK}
 shellcheck --version
 
-TRIVY=0.69.1
+TRIVY=0.72.0
 printf "\nDownloading trivy %s\n" "${TRIVY}"
 curl -sL https://github.com/aquasecurity/trivy/releases/download/v${TRIVY}/trivy_${TRIVY}_Linux-64bit.tar.gz | \
 tar xz && mv trivy /usr/local/bin/trivy
