@@ -21,7 +21,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [pluto](https://github.com/FairwindsOps/pluto) (v5.22.7)
 
 ### Container Tools
-- [trivy](https://github.com/aquasecurity/trivy) (v0.69.1)
+- [trivy](https://github.com/aquasecurity/trivy) (v0.72.0)
 
 ### GitOps & Service Mesh
 - [flux](https://github.com/fluxcd/flux2) (v2.7.5)
