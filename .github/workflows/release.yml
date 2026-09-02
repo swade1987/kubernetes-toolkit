@@ -17,19 +17,23 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
           token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: setup node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "lts/*"
 
+      # Pinned to the current v4 line rather than the newer v6 major - this
+      # step is the live release automation for the whole repo, and a major
+      # bump here isn't verified compatible. Let Dependabot open that as its
+      # own reviewable PR instead of bundling it into a CI-hardening change.
       - name: release
         id: release
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4 # v4.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
