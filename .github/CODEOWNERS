@@ -1,0 +1,4 @@
+# Names the repo owner for GitHub's own UI (review requests, blame).
+# The branch ruleset does not require owner review before merge — this
+# file's effect is currently informational only.
+* @swade1987
