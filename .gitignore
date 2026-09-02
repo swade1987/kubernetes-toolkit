@@ -1,2 +1,3 @@
 .idea
 /scripts/upgrade-k8s.sh.log
+/scripts/upgrade-flux.sh.log
