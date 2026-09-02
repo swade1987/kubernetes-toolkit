@@ -50,11 +50,21 @@ create_signed_pr() {
         done <<<"${changed_files}" | jq -s '{additions: .}'
     )"
 
+    # DCO checks the commit *message* for a "Signed-off-by:" trailer - a
+    # completely separate thing from the commit's cryptographic signature,
+    # which this mutation already provides regardless. "git commit -s" used
+    # to add this trailer automatically; creating the commit via the API
+    # instead means it has to be added explicitly here.
+    local signoff_name signoff_email
+    signoff_name="$(git config user.name)"
+    signoff_email="$(git config user.email)"
+
     local payload response commit_oid
     payload="$(jq -n \
         --arg repo "$repo" \
         --arg branch "$branch_name" \
         --arg headline "$commit_headline" \
+        --arg body "Signed-off-by: ${signoff_name} <${signoff_email}>" \
         --arg oid "$base_sha" \
         --argjson fileChanges "$file_changes_json" \
         '{
@@ -62,7 +72,7 @@ create_signed_pr() {
             variables: {
                 input: {
                     branch: { repositoryNameWithOwner: $repo, branchName: $branch },
-                    message: { headline: $headline },
+                    message: { headline: $headline, body: $body },
                     expectedHeadOid: $oid,
                     fileChanges: $fileChanges
                 }
