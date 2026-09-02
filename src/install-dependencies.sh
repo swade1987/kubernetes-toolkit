@@ -17,8 +17,7 @@ kustomize version
 HELM_VERSION=4.2.4
 printf "\nDownloading helm %s\n" "${HELM_VERSION}"
 curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | \
-tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln -s /usr/local/bin/helmv3 /usr/local/bin/helm
-helmv3 version
+tar xz && mv linux-amd64/helm /usr/local/bin/helm && rm -rf linux-amd64
 helm version
 
 KUBECONFORM=0.7.0
