@@ -17,8 +17,13 @@ jobs:
     # Dependabot's own commit messages (e.g. "Bump alpine from 3.23.3 to
     # 3.24.1") fail subject-case regardless of how conventional its PR
     # titles are - those are linted separately by pr-lint, and the squash
-    # merge uses the PR title/body, not the raw commit message.
-    if: github.actor != 'dependabot[bot]'
+    # merge uses the PR title/body, not the raw commit message. Keyed on
+    # the PR's actual author, not github.actor - a manual "update branch"
+    # (e.g. via the API, to satisfy the strict required-status-checks
+    # policy) makes the triggering actor whoever called it, not
+    # dependabot[bot], even though the PR's own commits are still
+    # Dependabot's.
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
