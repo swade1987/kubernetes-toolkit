@@ -20,6 +20,9 @@ set -o pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
+# shellcheck source=lib/signed-pr.sh
+source "${SCRIPT_DIR}/lib/signed-pr.sh"
+
 # Color definitions
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -183,28 +186,8 @@ create_pull_request() {
     local branch_name="${whoami}/upgrade-k8s-to-${KUBERNETES_VERSION}"
     local commit_message="feat: upgrading kubernetes to v${KUBERNETES_VERSION}"
 
-    # Create and checkout branch
-    log "INFO" "Creating and checking out branch..."
-    git checkout -b "$branch_name" || { log "ERROR" "Failed to create branch"; exit 1; }
-
-    # Commit changes
-    log "INFO" "Committing changes..."
-    git add .
-    git commit -asm "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
-
-    # Push branch
-    log "INFO" "Pushing branch..."
-    git push -u origin "$branch_name" || { log "ERROR" "Failed to push branch"; exit 1; }
-
-    # Create pull request
-    log "INFO" "Creating pull request..."
-    gh pr create \
-        --title "$commit_message" \
-        --body "feat: updating kubernetes version to ${KUBERNETES_VERSION}." \
-        --base main \
-        --head "$branch_name" || { log "ERROR" "Failed to create PR"; exit 1; }
-
-    log "SUCCESS" "Successfully created pull request for Kubernetes version upgrade"
+    create_signed_pr "$branch_name" "$commit_message" "$commit_message" \
+        "feat: updating kubernetes version to ${KUBERNETES_VERSION}."
 }
 
 ###############################################################################

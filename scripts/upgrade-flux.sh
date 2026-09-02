@@ -31,6 +31,9 @@ set -o pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
+# shellcheck source=lib/signed-pr.sh
+source "${SCRIPT_DIR}/scripts/lib/signed-pr.sh"
+
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
@@ -182,16 +185,6 @@ create_pull_request() {
     local branch_name="flux/upgrade-to-v${FLUX_VERSION}"
     local commit_message="feat: upgrading flux to v${FLUX_VERSION}"
 
-    log "INFO" "Creating and checking out branch..."
-    git checkout -b "$branch_name" || { log "ERROR" "Failed to create branch"; exit 1; }
-
-    log "INFO" "Committing changes..."
-    git add .
-    git commit -asm "$commit_message" || { log "ERROR" "Failed to commit changes"; exit 1; }
-
-    log "INFO" "Pushing branch..."
-    git push -u origin "$branch_name" || { log "ERROR" "Failed to push branch"; exit 1; }
-
     local body="Bumps flux from ${CURRENT_FLUX} to ${FLUX_VERSION}."
 
     if [[ "${KUSTOMIZE_VERSION}" != "${CURRENT_KUSTOMIZE}" ]]; then
@@ -213,14 +206,7 @@ Also bumps Helm from ${CURRENT_HELM} to ${HELM_VERSION} (helm-controller v${HC_V
 Helm stays at ${HELM_VERSION} - flux v${FLUX_VERSION} still pins the same version via helm-controller v${HC_VERSION}."
     fi
 
-    log "INFO" "Creating pull request..."
-    gh pr create \
-        --title "$commit_message" \
-        --body "$body" \
-        --base main \
-        --head "$branch_name" || { log "ERROR" "Failed to create PR"; exit 1; }
-
-    log "SUCCESS" "Successfully created pull request for Flux upgrade"
+    create_signed_pr "$branch_name" "$commit_message" "$commit_message" "$body"
 }
 
 parse_args() {
