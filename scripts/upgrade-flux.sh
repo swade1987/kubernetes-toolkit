@@ -223,7 +223,32 @@ Helm stays at ${HELM_VERSION} - flux v${FLUX_VERSION} still pins the same versio
     log "SUCCESS" "Successfully created pull request for Flux upgrade"
 }
 
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -e|--execute)
+                DRY_RUN=false
+                shift
+                ;;
+            -l|--log)
+                LOG_FILE="$2"
+                shift 2
+                ;;
+            *)
+                log "ERROR" "Unexpected argument: $1"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+}
+
 main() {
+    parse_args "$@"
     check_requirements "git" "gh" "jq" "sed" "awk"
 
     log "INFO" "Fetching latest flux2 release..."
