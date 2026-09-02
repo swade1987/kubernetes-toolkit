@@ -14,9 +14,9 @@ curl -sL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomiz
 tar xz && mv kustomize /usr/local/bin/kustomize
 kustomize version
 
-HELM_V3=3.19.2
-printf "\nDownloading helm %s\n" "${HELM_V3}"
-curl -sSL https://get.helm.sh/helm-v${HELM_V3}-linux-amd64.tar.gz | \
+HELM_VERSION=3.19.2
+printf "\nDownloading helm %s\n" "${HELM_VERSION}"
+curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helmv3 && rm -rf linux-amd64 && ln -s /usr/local/bin/helmv3 /usr/local/bin/helm
 helmv3 version
 helm version

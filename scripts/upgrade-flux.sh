@@ -19,7 +19,9 @@
 #      the module version *is* the Helm CLI release version.
 #
 # This keeps the toolkit's kustomize/Helm aligned with what Flux itself is
-# compatible with, rather than independently chasing each tool's own latest.
+# compatible with, rather than independently chasing each tool's own latest -
+# including across a Helm major version move, since HELM_VERSION carries no
+# major-specific naming.
 
 set -o errexit
 set -o errtrace
@@ -89,6 +91,12 @@ check_requirements() {
 }
 
 # Fetch a file's content from a repo at a given ref, via the GitHub API.
+# Reads the whole response before returning it, deliberately: a caller that
+# piped this straight into "grep -m1" or "head -1" would close the pipe as
+# soon as it found a match, and if base64 was still writing when that
+# happened it would get a broken-pipe error that "set -o pipefail" turns
+# into the whole pipeline failing - even though the value was already
+# extracted correctly. Capturing fully here avoids that race entirely.
 fetch_file() {
     local repo="$1" path="$2" ref="$3"
     gh api "repos/${repo}/contents/${path}?ref=${ref}" --jq '.content' | base64 -d
@@ -115,18 +123,18 @@ get_component_version() {
 }
 
 get_kustomize_version() {
-    local kc_tag="$1"
-    fetch_file "fluxcd/kustomize-controller" "go.mod" "v${kc_tag}" \
-        | grep -m1 "// Pin kustomize to v" \
+    local kc_tag="$1" content
+    content="$(fetch_file "fluxcd/kustomize-controller" "go.mod" "v${kc_tag}")"
+    grep -m1 "// Pin kustomize to v" <<<"$content" \
         | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' \
         | tr -d v
 }
 
 # Prints "<major> <version>", e.g. "4 4.2.4"
 get_helm_version() {
-    local hc_tag="$1"
-    fetch_file "fluxcd/helm-controller" "go.mod" "v${hc_tag}" \
-        | grep -m1 -E '^\s*helm\.sh/helm/v[0-9]+ v' \
+    local hc_tag="$1" content
+    content="$(fetch_file "fluxcd/helm-controller" "go.mod" "v${hc_tag}")"
+    grep -m1 -E '^\s*helm\.sh/helm/v[0-9]+ v' <<<"$content" \
         | sed -E 's|.*helm\.sh/helm/v([0-9]+) v([0-9.]+).*|\1 \2|'
 }
 
@@ -134,39 +142,33 @@ show_config() {
     log "INFO" "=== Configuration ==="
     log "INFO" "Flux target version:      ${FLUX_VERSION}"
     log "INFO" "kustomize target version: ${KUSTOMIZE_VERSION}"
-    log "INFO" "Helm target version:      v${HELM_MAJOR}.x -> ${HELM_VERSION}"
+    log "INFO" "Helm target version:      ${HELM_VERSION} (v${HELM_MAJOR} line)"
     log "INFO" "Mode: $([ "$DRY_RUN" = true ] && echo 'DRY RUN' || echo 'EXECUTE')"
     log "INFO" "===================="
 }
 
 update_install_script() {
     if [[ "${DRY_RUN}" == "true" ]]; then
-        log "INFO" "Would update FLUX/KUSTOMIZE in ${INSTALL_SCRIPT}"
-        [[ "${HELM_SAME_MAJOR}" == "true" ]] && log "INFO" "Would update HELM_V3 in ${INSTALL_SCRIPT}"
+        log "INFO" "Would update FLUX/KUSTOMIZE/HELM_VERSION in ${INSTALL_SCRIPT}"
         return 0
     fi
 
     sed -i.bak -E "s/^FLUX=.*/FLUX=${FLUX_VERSION}/" "${INSTALL_SCRIPT}"
     sed -i.bak -E "s/^KUSTOMIZE=.*/KUSTOMIZE=${KUSTOMIZE_VERSION}/" "${INSTALL_SCRIPT}"
-    if [[ "${HELM_SAME_MAJOR}" == "true" ]]; then
-        sed -i.bak -E "s/^HELM_V3=.*/HELM_V3=${HELM_VERSION}/" "${INSTALL_SCRIPT}"
-    fi
+    sed -i.bak -E "s/^HELM_VERSION=.*/HELM_VERSION=${HELM_VERSION}/" "${INSTALL_SCRIPT}"
     rm -f "${INSTALL_SCRIPT}.bak"
     log "SUCCESS" "Updated ${INSTALL_SCRIPT}"
 }
 
 update_readme() {
     if [[ "${DRY_RUN}" == "true" ]]; then
-        log "INFO" "Would update flux/kustomize entries in ${README}"
-        [[ "${HELM_SAME_MAJOR}" == "true" ]] && log "INFO" "Would update Helm entry in ${README}"
+        log "INFO" "Would update flux/kustomize/Helm entries in ${README}"
         return 0
     fi
 
     sed -i.bak -E "s|(\[flux\]\(https://github.com/fluxcd/flux2\)) \(v[0-9.]+\)|\1 (v${FLUX_VERSION})|" "${README}"
     sed -i.bak -E "s|(\[kustomize\]\(https://github.com/kubernetes-sigs/kustomize\)) \(v[0-9.]+\)|\1 (v${KUSTOMIZE_VERSION})|" "${README}"
-    if [[ "${HELM_SAME_MAJOR}" == "true" ]]; then
-        sed -i.bak -E "s|(\[Helm v3\]\(https://github.com/helm/helm\)) \(v[0-9.]+\)|\1 (v${HELM_VERSION})|" "${README}"
-    fi
+    sed -i.bak -E "s|\[Helm\]\(https://github.com/helm/helm\) \(v[0-9.]+\).*|[Helm](https://github.com/helm/helm) (v${HELM_VERSION}) - pinned to flux version|" "${README}"
     rm -f "${README}.bak"
     log "SUCCESS" "Updated ${README}"
 }
@@ -198,18 +200,17 @@ create_pull_request() {
         body="${body} kustomize stays at ${KUSTOMIZE_VERSION} - flux v${FLUX_VERSION} still pins the same version via kustomize-controller v${KC_VERSION}."
     fi
 
-    if [[ "${HELM_SAME_MAJOR}" == "true" && "${HELM_VERSION}" != "${CURRENT_HELM}" ]]; then
+    if [[ "${HELM_VERSION}" != "${CURRENT_HELM}" ]]; then
         body="${body}
 
 Also bumps Helm from ${CURRENT_HELM} to ${HELM_VERSION} (helm-controller v${HC_VERSION} pins helm.sh/helm/v${HELM_MAJOR} v${HELM_VERSION})."
-    elif [[ "${HELM_SAME_MAJOR}" == "true" ]]; then
-        body="${body}
-
-Helm stays at ${HELM_VERSION} - flux v${FLUX_VERSION} still pins the same version via helm-controller v${HC_VERSION}."
+        if [[ "${HELM_MAJOR}" != "${CURRENT_HELM_MAJOR}" ]]; then
+            body="${body} Note: this crosses a Helm major version (v${CURRENT_HELM_MAJOR} -> v${HELM_MAJOR}) - Helm's CLI surface can differ across majors, so review this one a bit more closely than a routine patch bump."
+        fi
     else
         body="${body}
 
-**Not included: Helm has moved to v${HELM_MAJOR} upstream.** helm-controller v${HC_VERSION} now pins \`helm.sh/helm/v${HELM_MAJOR} v${HELM_VERSION}\`, but this image still bundles Helm v3 (\`${CURRENT_HELM}\`) under the \`HELM_V3\` variable name and a \`helmv3\` binary alias. Bumping the major version needs more than a version-string edit - the variable name and binary alias would be actively misleading if left as-is, and Helm v${HELM_MAJOR}'s CLI surface differs from v3 in ways worth reviewing deliberately rather than through an automated bump. Left for a manual decision."
+Helm stays at ${HELM_VERSION} - flux v${FLUX_VERSION} still pins the same version via helm-controller v${HC_VERSION}."
     fi
 
     log "INFO" "Creating pull request..."
@@ -266,15 +267,10 @@ main() {
     fi
 
     CURRENT_KUSTOMIZE="$(get_current_version KUSTOMIZE)"
-    CURRENT_HELM="$(get_current_version HELM_V3)"
+    CURRENT_HELM="$(get_current_version HELM_VERSION)"
     readonly CURRENT_KUSTOMIZE CURRENT_HELM
-
-    if [[ "${HELM_MAJOR}" == "3" ]]; then
-        HELM_SAME_MAJOR=true
-    else
-        HELM_SAME_MAJOR=false
-    fi
-    readonly HELM_SAME_MAJOR
+    CURRENT_HELM_MAJOR="${CURRENT_HELM%%.*}"
+    readonly CURRENT_HELM_MAJOR
 
     show_config
     update_install_script
