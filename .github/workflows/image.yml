@@ -8,24 +8,38 @@ on:
 env:
   KUBERNETES_VERSION: 1.37.0
 
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+
+# Safe floor for any job that doesn't declare its own permissions; the
+# build job below still needs and declares its own broader grants.
+permissions:
+  contents: read
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     steps:
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.3.0
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.8.0
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
 
       - name: Login to GCR
-        uses: docker/login-action@v3.3.0
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: eu.gcr.io
           username: _json_key
@@ -37,10 +51,11 @@ jobs:
           # Remove 'v' prefix if present
           VERSION=${GITHUB_REF#refs/tags/v}
           VERSION=${VERSION#refs/tags/}
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
 
       - name: Build and push
-        uses: docker/build-push-action@v6.13.0
+        id: push
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           build-args: |
             KUBERNETES_VERSION=${{ env.KUBERNETES_VERSION }}
@@ -49,3 +64,31 @@ jobs:
           tags: |
             eu.gcr.io/swade1987/kubernetes-toolkit:latest
             eu.gcr.io/swade1987/kubernetes-toolkit:${{ env.VERSION }}
+
+      # Signed SLSA build provenance, verifiable with "gh attestation verify".
+      # push-to-registry is left off: GCR's OCI-referrer support for a
+      # Sigstore-format attestation isn't confirmed, and the attestation is
+      # already verifiable via GitHub's own attestation store either way.
+      - name: Attest build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: eu.gcr.io/swade1987/kubernetes-toolkit
+          subject-digest: ${{ steps.push.outputs.digest }}
+
+      # SPDX SBOM for the exact image just pushed (pinned to its digest, not
+      # a floating tag), attested alongside the provenance.
+      - name: Generate SBOM
+        uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          image: eu.gcr.io/swade1987/kubernetes-toolkit@${{ steps.push.outputs.digest }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Attest SBOM
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: eu.gcr.io/swade1987/kubernetes-toolkit
+          subject-digest: ${{ steps.push.outputs.digest }}
+          sbom-path: sbom.spdx.json
