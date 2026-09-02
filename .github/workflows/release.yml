@@ -34,6 +34,6 @@ jobs:
       # own reviewable PR instead of bundling it into a CI-hardening change.
       - name: release
         id: release
-        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4 # v4.2.2
+        uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
