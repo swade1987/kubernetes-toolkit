@@ -2,6 +2,8 @@
 
 [![release](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/release.yml)
 [![image](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/image.yml/badge.svg)](https://github.com/swade1987/kubernetes-toolkit/actions/workflows/image.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/swade1987/kubernetes-toolkit/badge)](https://scorecard.dev/viewer/?uri=github.com/swade1987/kubernetes-toolkit)
+[![Latest Release](https://img.shields.io/github/v/release/swade1987/kubernetes-toolkit)](https://github.com/swade1987/kubernetes-toolkit/releases)
 
 This container provides a comprehensive suite of tools for Kubernetes. It is designed to be used in CI/CD pipelines and local development environments.
 
