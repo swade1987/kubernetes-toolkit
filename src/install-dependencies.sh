@@ -74,7 +74,7 @@ printf "\nDownloading jsonlint %s\n" "${JSONLINT}"
 npm install jsonlint@${JSONLINT} -g
 jsonlint --version || :
 
-PLUTO=5.22.7
+PLUTO=5.24.3
 printf "\nDownloading pluto %s\n" "${PLUTO}"
 curl -sL https://github.com/FairwindsOps/pluto/releases/download/v${PLUTO}/pluto_${PLUTO}_linux_amd64.tar.gz | \
 tar xz && mv pluto /usr/local/bin/pluto
