@@ -81,7 +81,7 @@ tar xz && mv pluto /usr/local/bin/pluto
 rm -rf pluto_${PLUTO}_linux_amd64.tar.gz
 pluto version
 
-SHELLCHECK=v0.10.0
+SHELLCHECK=v0.11.0
 printf "\ndownloading shellcheck %s \n" "${SHELLCHECK}"
 wget https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK}/shellcheck-${SHELLCHECK}.linux.x86_64.tar.xz -O - | tar xJf -
 mv shellcheck-${SHELLCHECK}/shellcheck /usr/local/bin/shellcheck && rm -rf shellcheck-${SHELLCHECK}
