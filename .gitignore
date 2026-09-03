@@ -2,3 +2,10 @@
 /scripts/upgrade-k8s.sh.log
 /scripts/upgrade-flux.sh.log
 /scripts/upgrade-flux-operator.sh.log
+/scripts/upgrade-kubeconform.sh.log
+/scripts/upgrade-pluto.sh.log
+/scripts/upgrade-istioctl.sh.log
+/scripts/upgrade-conftest.sh.log
+/scripts/upgrade-helm-docs.sh.log
+/scripts/upgrade-shellcheck.sh.log
+/scripts/upgrade-trivy.sh.log

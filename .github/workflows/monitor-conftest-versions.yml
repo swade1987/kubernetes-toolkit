@@ -1,0 +1,50 @@
+name: Monitor uconftest Version
+
+on:
+  schedule:
+    - cron: '0 06 * * 1'  # Weekly, Mondays at 06:00
+  workflow_dispatch:  # Allow manual triggers
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-conftest-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Setup GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.RELEASE_TOKEN }}"
+
+      - name: Check for an existing upgrade PR
+        id: check-prs
+        run: |
+          EXISTING_PRS=$(gh pr list --json title --jq '.[] | select(.title | contains("upgrading conftest to ")) | .title')
+          if [ -n "$EXISTING_PRS" ]; then
+            echo "Found an existing conftest upgrade PR, skipping until it's merged:"
+            echo "$EXISTING_PRS"
+            echo "has_pr=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_pr=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure Git
+        if: steps.check-prs.outputs.has_pr == 'false'
+        run: |
+          git config user.name "Steve Wade"
+          git config user.email "steven@stevenwade.co.uk"
+
+      - name: Run upgrade script
+        if: steps.check-prs.outputs.has_pr == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          chmod +x ./scripts/upgrade-conftest.sh
+          ./scripts/upgrade-conftest.sh --execute
