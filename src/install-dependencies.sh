@@ -20,7 +20,7 @@ curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | \
 tar xz && mv linux-amd64/helm /usr/local/bin/helm && rm -rf linux-amd64
 helm version
 
-KUBECONFORM=0.7.0
+KUBECONFORM=0.8.0
 printf "\nDownloading kubeconform %s\n" "${KUBECONFORM}"
 curl -sL https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM}/kubeconform-linux-amd64.tar.gz | \
 tar xz && mv kubeconform /usr/local/bin/kubeconform
