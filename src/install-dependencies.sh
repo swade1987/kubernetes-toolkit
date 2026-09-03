@@ -26,7 +26,7 @@ curl -sL https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM}/
 tar xz && mv kubeconform /usr/local/bin/kubeconform
 kubeconform -v
 
-CONFTEST=0.66.0
+CONFTEST=0.69.0
 printf "\nDownloading conftest %s\n" "${CONFTEST}"
 curl -sL https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST}/conftest_${CONFTEST}_Linux_x86_64.tar.gz | \
 tar xz && mv conftest /usr/local/bin/conftest
