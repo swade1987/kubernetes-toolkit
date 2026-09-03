@@ -1,4 +1,4 @@
-name: Monitor ukubeconform Version
+name: Monitor Kubeconform Version
 
 on:
   schedule:

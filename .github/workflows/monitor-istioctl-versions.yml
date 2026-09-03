@@ -1,4 +1,4 @@
-name: Monitor uistioctl Version
+name: Monitor Istioctl Version
 
 on:
   schedule:

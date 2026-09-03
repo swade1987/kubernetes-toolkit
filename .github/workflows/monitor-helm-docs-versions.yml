@@ -1,4 +1,4 @@
-name: Monitor uhelm-docs Version
+name: Monitor Helm-docs Version
 
 on:
   schedule:

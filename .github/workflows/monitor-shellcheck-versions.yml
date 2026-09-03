@@ -1,4 +1,4 @@
-name: Monitor ushellcheck Version
+name: Monitor Shellcheck Version
 
 on:
   schedule:
