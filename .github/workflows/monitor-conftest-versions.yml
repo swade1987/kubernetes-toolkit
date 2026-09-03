@@ -1,4 +1,4 @@
-name: Monitor uconftest Version
+name: Monitor Conftest Version
 
 on:
   schedule:
