@@ -15,27 +15,27 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) (version passed as build argument)
 - [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.8.1)
 - [Helm](https://github.com/helm/helm) (v4.2.4) - pinned to flux version
-- [helm-docs](https://github.com/norwoodj/helm-docs)  (v1.14.2)
+- [helm-docs](https://github.com/norwoodj/helm-docs) (v1.14.2)
 
 ### Validation & Testing
-- [kubeconform](https://github.com/yannh/kubeconform) (v0.7.0)
-- [conftest](https://github.com/open-policy-agent/conftest) (v0.66.0)
-- [pluto](https://github.com/FairwindsOps/pluto) (v5.22.7)
+- [kubeconform](https://github.com/yannh/kubeconform) (v0.8.0)
+- [conftest](https://github.com/open-policy-agent/conftest) (v0.69.0)
+- [pluto](https://github.com/FairwindsOps/pluto) (v5.24.3)
 
 ### Container Tools
-- [trivy](https://github.com/aquasecurity/trivy) (v0.72.0)
+- [trivy](https://github.com/aquasecurity/trivy) (v0.74.0)
 
 ### GitOps & Service Mesh
 - [flux](https://github.com/fluxcd/flux2) (v2.9.5)
 - [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.59.0)
-- [istioctl](https://github.com/istio/istio) (v1.28.3)
+- [istioctl](https://github.com/istio/istio) (v1.31.0)
 
 ### Configuration Processing
 - [yq](https://github.com/mikefarah/yq) (v4.44.3)
 - [jq](https://github.com/stedolan/jq) (v1.7.1)
 
 ### Development & Linting Tools
-- [shellcheck](https://github.com/koalaman/shellcheck) (v0.10.0)
+- [shellcheck](https://github.com/koalaman/shellcheck) (v0.11.0)
 - [jsonlint](https://github.com/zaach/jsonlint) (v1.6.3)
 
 ### Schema Support

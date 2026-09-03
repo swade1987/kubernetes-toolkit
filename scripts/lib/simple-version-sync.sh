@@ -11,13 +11,17 @@
 # istioctl - each a simple GitHub-releases project with no derivation
 # chain, unlike flux's kustomize/Helm versions). Requires "log",
 # "create_signed_pr", "DRY_RUN" and "INSTALL_SCRIPT" to already be defined
-# by the sourcing script.
+# by the sourcing script. Also updates README.md's tool table, matching
+# upgrade-flux.sh / upgrade-flux-operator.sh - the README's markdown link
+# for the tool must read "[<display name>](https://github.com/<repo>) (vX.Y.Z)"
+# with the repo exactly matching the <owner/repo> argument.
 #
 # Usage: sync_simple_tool_version <display name> <owner/repo> <VAR_NAME> <tag prefix, "v" or "">
 # Returns 1 (no error, just "nothing to do") if already in sync.
 
 sync_simple_tool_version() {
     local display_name="$1" repo="$2" var_name="$3" tag_prefix="$4"
+    local readme="README.md"
 
     log "INFO" "Fetching latest ${display_name} release..."
     local latest_tag target_version current_version
@@ -34,12 +38,19 @@ sync_simple_tool_version() {
 
     if [[ "${DRY_RUN}" == "true" ]]; then
         log "INFO" "Would update ${var_name} in ${INSTALL_SCRIPT} to ${target_version}"
+        log "INFO" "Would update ${display_name} entry in ${readme}"
         return 0
     fi
 
     sed -i.bak -E "s/^${var_name}=.*/${var_name}=${target_version}/" "${INSTALL_SCRIPT}"
     rm -f "${INSTALL_SCRIPT}.bak"
     log "SUCCESS" "Updated ${INSTALL_SCRIPT}"
+
+    local readme_version="${target_version}"
+    [[ "${readme_version}" != v* ]] && readme_version="v${readme_version}"
+    sed -i.bak -E "s|(\[${display_name}\]\(https://github.com/${repo}\))[[:space:]]+\(v[0-9.]+\)|\1 (${readme_version})|" "${readme}"
+    rm -f "${readme}.bak"
+    log "SUCCESS" "Updated ${readme}"
 
     local branch_slug
     branch_slug="$(echo "${var_name}" | tr '[:upper:]' '[:lower:]')"
