@@ -19,8 +19,8 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 
 ### Validation & Testing
 - [kubeconform](https://github.com/yannh/kubeconform) (v0.8.0)
-- [conftest](https://github.com/open-policy-agent/conftest) (v0.70.1)
-- [pluto](https://github.com/FairwindsOps/pluto) (v5.24.3)
+- [conftest](https://github.com/open-policy-agent/conftest) (v0.70.0)
+- [pluto](https://github.com/FairwindsOps/pluto) (v5.24.4)
 
 ### Container Tools
 - [trivy](https://github.com/aquasecurity/trivy) (v0.74.0)
