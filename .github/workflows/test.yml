@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  KUBERNETES_VERSION: 1.37.0
+  KUBERNETES_VERSION: 1.37.1
 
 concurrency:
   group: build-${{ github.ref }}
