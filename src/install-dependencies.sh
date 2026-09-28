@@ -39,7 +39,7 @@ tar xz && mv flux /usr/local/bin/flux
 rm -rf flux_${FLUX}
 flux version --client
 
-ISTIOCTL=1.31.0
+ISTIOCTL=1.31.1
 # shellcheck disable=SC2059
 printf "\nDownloading istioctl %s\n" "${ISTIOCTL}"
 curl -sL https://github.com/istio/istio/releases/download/${ISTIOCTL}/istioctl-${ISTIOCTL}-linux-amd64.tar.gz | \
