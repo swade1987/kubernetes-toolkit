@@ -14,7 +14,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 ### Core Kubernetes Tools
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) (version passed as build argument)
 - [kustomize](https://github.com/kubernetes-sigs/kustomize) (v5.8.1)
-- [Helm](https://github.com/helm/helm) (v4.2.4) - pinned to flux version
+- [Helm](https://github.com/helm/helm) (v4.3.1) - pinned to flux version
 - [helm-docs](https://github.com/norwoodj/helm-docs) (v1.14.2)
 
 ### Validation & Testing
@@ -26,7 +26,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 - [trivy](https://github.com/aquasecurity/trivy) (v0.76.1)
 
 ### GitOps & Service Mesh
-- [flux](https://github.com/fluxcd/flux2) (v2.9.6)
+- [flux](https://github.com/fluxcd/flux2) (v2.10.0)
 - [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.61.0)
 - [istioctl](https://github.com/istio/istio) (v1.31.3)
 
