@@ -28,7 +28,7 @@ Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://
 ### GitOps & Service Mesh
 - [flux](https://github.com/fluxcd/flux2) (v2.10.0)
 - [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.62.1)
-- [istioctl](https://github.com/istio/istio) (v1.31.3)
+- [istioctl](https://github.com/istio/istio) (v1.31.4)
 
 ### Configuration Processing
 - [yq](https://github.com/mikefarah/yq) (v4.44.3)
