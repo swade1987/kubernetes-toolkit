@@ -7,7 +7,13 @@
 
 This container provides a comprehensive suite of tools for Kubernetes. It is designed to be used in CI/CD pipelines and local development environments.
 
-Images can be found at [https://eu.gcr.io/swade1987/kubernetes-toolkit](https://eu.gcr.io/swade1987/kubernetes-toolkit).
+Images are published to [GitHub Container Registry](https://github.com/swade1987/kubernetes-toolkit/pkgs/container/kubernetes-toolkit):
+
+```
+docker pull ghcr.io/swade1987/kubernetes-toolkit:<version>
+```
+
+`eu.gcr.io/swade1987/kubernetes-toolkit` is deprecated. It still receives new releases for now, but it will stop, so switch to `ghcr.io`. Older tags are copied to `ghcr.io` with their original digests (the `mirror-to-ghcr` workflow), so switching is a hostname change, not a version change.
 
 ## Included Tools/Schemas
 

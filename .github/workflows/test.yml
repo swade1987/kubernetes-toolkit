@@ -36,4 +36,4 @@ jobs:
             KUBERNETES_VERSION=${{ env.KUBERNETES_VERSION }}
           context: .
           push: false
-          tags: eu.gcr.io/swade1987/kubernetes-toolkit:${{ env.KUBERNETES_VERSION }}
+          tags: ghcr.io/swade1987/kubernetes-toolkit:${{ env.KUBERNETES_VERSION }}

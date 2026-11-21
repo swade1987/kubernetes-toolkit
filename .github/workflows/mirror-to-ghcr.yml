@@ -1,0 +1,49 @@
+name: mirror-to-ghcr
+
+# Transition helper: copies tags that were only ever published to eu.gcr.io
+# across to ghcr.io byte for byte (same digests), so anyone pinned to an old
+# tag can switch registry without switching version. New releases reach
+# ghcr.io through image.yml. Delete this workflow once eu.gcr.io is retired.
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Space-separated tags to copy (e.g. "1.26.0 1.56.0"), or "all" for every tag except latest'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      packages: write # to push to ghcr.io with GITHUB_TOKEN
+    env:
+      SRC: eu.gcr.io/swade1987/kubernetes-toolkit
+      DST: ghcr.io/swade1987/kubernetes-toolkit
+      TAGS_INPUT: ${{ inputs.tags }}
+    steps:
+      # skopeo ships on the ubuntu-24.04 runner image.
+      - name: Login to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: skopeo login ghcr.io --username "${GITHUB_ACTOR}" --password-stdin <<< "${GHCR_TOKEN}"
+
+      - name: Copy tags
+        run: |
+          set -f # tags are split on whitespace, never globbed
+          if [[ "${TAGS_INPUT}" == "all" ]]; then
+            TAGS=$(skopeo list-tags "docker://${SRC}" | jq -r '.Tags[] | select(. != "latest")')
+          else
+            TAGS="${TAGS_INPUT}"
+          fi
+          for TAG in ${TAGS}; do
+            echo "::group::${TAG}"
+            skopeo copy --all --preserve-digests --retry-times 3 \
+              "docker://${SRC}:${TAG}" "docker://${DST}:${TAG}"
+            echo "::endgroup::"
+          done
