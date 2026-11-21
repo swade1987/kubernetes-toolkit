@@ -13,7 +13,7 @@ Images are published to [GitHub Container Registry](https://github.com/swade1987
 docker pull ghcr.io/swade1987/kubernetes-toolkit:<version>
 ```
 
-`eu.gcr.io/swade1987/kubernetes-toolkit` is deprecated. It still receives new releases for now, but it will stop, so switch to `ghcr.io`. Older tags are copied to `ghcr.io` with their original digests (the `mirror-to-ghcr` workflow), so switching is a hostname change, not a version change.
+`eu.gcr.io/swade1987/kubernetes-toolkit` was retired on 7 December 2026. Every tag that was published there is on `ghcr.io` with the same digest, so switching is a hostname change, not a version change.
 
 ## Included Tools/Schemas
 
