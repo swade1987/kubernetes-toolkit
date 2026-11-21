@@ -25,6 +25,7 @@ jobs:
       id-token: write
       attestations: write
       artifact-metadata: write
+      packages: write # to push to ghcr.io with GITHUB_TOKEN
     steps:
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
@@ -45,6 +46,15 @@ jobs:
           username: _json_key
           password: ${{ secrets.PUBLIC_GCR_JSON_KEY }}
 
+      # ghcr.io is the canonical registry; eu.gcr.io is kept only while
+      # consumers migrate, because Google bills Steve for every public pull.
+      - name: Login to GHCR
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract version from tag
         id: version
         run: |
@@ -62,17 +72,19 @@ jobs:
           context: .
           push: true
           tags: |
+            ghcr.io/swade1987/kubernetes-toolkit:latest
+            ghcr.io/swade1987/kubernetes-toolkit:${{ env.VERSION }}
             eu.gcr.io/swade1987/kubernetes-toolkit:latest
             eu.gcr.io/swade1987/kubernetes-toolkit:${{ env.VERSION }}
 
       # Signed SLSA build provenance, verifiable with "gh attestation verify".
-      # push-to-registry is left off: GCR's OCI-referrer support for a
-      # Sigstore-format attestation isn't confirmed, and the attestation is
-      # already verifiable via GitHub's own attestation store either way.
+      # push-to-registry is left off: the attestation is already verifiable
+      # via GitHub's own attestation store, which matches on the digest, and
+      # both registries hold the same digest.
       - name: Attest build provenance
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
-          subject-name: eu.gcr.io/swade1987/kubernetes-toolkit
+          subject-name: ghcr.io/swade1987/kubernetes-toolkit
           subject-digest: ${{ steps.push.outputs.digest }}
 
       # SPDX SBOM for the exact image just pushed (pinned to its digest, not
@@ -80,7 +92,7 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
-          image: eu.gcr.io/swade1987/kubernetes-toolkit@${{ steps.push.outputs.digest }}
+          image: ghcr.io/swade1987/kubernetes-toolkit@${{ steps.push.outputs.digest }}
           format: spdx-json
           output-file: sbom.spdx.json
           upload-artifact: false
@@ -89,6 +101,6 @@ jobs:
       - name: Attest SBOM
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
-          subject-name: eu.gcr.io/swade1987/kubernetes-toolkit
+          subject-name: ghcr.io/swade1987/kubernetes-toolkit
           subject-digest: ${{ steps.push.outputs.digest }}
           sbom-path: sbom.spdx.json
