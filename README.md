@@ -32,7 +32,7 @@ docker pull ghcr.io/swade1987/kubernetes-toolkit:<version>
 - [trivy](https://github.com/aquasecurity/trivy) (v0.76.2)
 
 ### GitOps & Service Mesh
-- [flux](https://github.com/fluxcd/flux2) (v2.10.0)
+- [flux](https://github.com/fluxcd/flux2) (v2.10.1)
 - [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.62.1)
 - [istioctl](https://github.com/istio/istio) (v1.32.0)
 
