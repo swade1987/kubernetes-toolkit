@@ -33,7 +33,7 @@ docker pull ghcr.io/swade1987/kubernetes-toolkit:<version>
 
 ### GitOps & Service Mesh
 - [flux](https://github.com/fluxcd/flux2) (v2.10.0)
-- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.62.1)
+- [flux operator](https://github.com/controlplaneio-fluxcd/flux-operator) (v0.63.1)
 - [istioctl](https://github.com/istio/istio) (v1.32.0)
 
 ### Configuration Processing
