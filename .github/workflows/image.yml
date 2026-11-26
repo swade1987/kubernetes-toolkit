@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  KUBERNETES_VERSION: 1.37.2
+  KUBERNETES_VERSION: 1.37.3
 
 concurrency:
   group: image-${{ github.ref }}
